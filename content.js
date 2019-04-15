@@ -20,7 +20,6 @@
         var root_div = document.getElementById('root');
 
         var target_div= root_div.firstElementChild.getElementsByClassName("container")[0].firstElementChild;
-        console.log(target_div);
         var insert_html = make_base_html();
         target_div.insertBefore(insert_html, target_div.firstChild);
     });
