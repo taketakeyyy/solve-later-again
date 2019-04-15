@@ -1,0 +1,27 @@
+{
+    "manifest_version": 2,
+    "name": "Solve Later Again",
+    "version": "1.0",
+    // ここまで必須
+    "browser_action": {
+        "default_icon": {
+            "16": "icon.png"  // 16x16のアイコン
+        }
+    },
+
+    "content_scripts": [
+        {
+            //"matches": ["https://kenkoooo.com/atcoder/#/table/*", "https://kenkoooo.com/atcoder/?user=*#/table/*/"],
+            "matches": ["https://kenkoooo.com/atcoder/*"],
+            "js": ["content.js"]
+        }
+    ],
+
+    "background": {
+        "scripts": ["background.js"],
+        "persistent": false
+    },
+
+    "permissions": ["tabs"]
+    
+}
