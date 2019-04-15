@@ -22,6 +22,8 @@
         var target_div= root_div.firstElementChild.getElementsByClassName("container")[0].firstElementChild;
         var insert_html = make_base_html();
         target_div.insertBefore(insert_html, target_div.firstChild);
+
+        make_checkboxes();
     });
 
     function make_base_html(){
@@ -74,13 +76,25 @@
 
         var col_header1 = document.createElement("col");
         var col_header2 = document.createElement("col");
+        var col_header3 = document.createElement("col");
+        var col_header4 = document.createElement("col");
+        var col_header5 = document.createElement("col");
         colgroup_container_header.appendChild(col_header1);
         colgroup_container_header.appendChild(col_header2);
+        colgroup_container_header.appendChild(col_header3);
+        colgroup_container_header.appendChild(col_header4);
+        colgroup_container_header.appendChild(col_header5);
 
         var col_body1 = document.createElement("col");
         var col_body2 = document.createElement("col");
+        var col_body3 = document.createElement("col");
+        var col_body4 = document.createElement("col");
+        var col_body5 = document.createElement("col");
         colgroup_container_body.appendChild(col_body1);
         colgroup_container_body.appendChild(col_body2);
+        colgroup_container_body.appendChild(col_body3);
+        colgroup_container_body.appendChild(col_body4);
+        colgroup_container_body.appendChild(col_body5);
 
         var thead = document.createElement("thead");
         table_container_header.appendChild(thead);
@@ -113,6 +127,11 @@
 
 
         return html;
+    }
+
+    function make_checkboxes(){
+        /* 各問題に、「あとで解く」に追加する用のチェックボックスを作成する */
+
     }
 
 })();
