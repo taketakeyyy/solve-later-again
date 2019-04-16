@@ -1,7 +1,6 @@
 (function(){
-    // 即時関数で囲む
+    // スコープの汚染を防ぐため、即時関数で囲む
     'use strict';
-    //alert("Hello Kenkoooo!");
 
     // Content Scriptからchrome.runtime.sendMessage()を使ってメッセージを投げる
     // 第一引数にはメッセージのキーと値を指定する
