@@ -20,8 +20,8 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
 
     chrome.tabs.getSelected(null, function(tab){
         // Tableページのみ処理する
-        var pattern = /^https?:\/\/kenkoooo\.com\/atcoder\/\?user=.*#\/table\/.*/g;
-        var result = tab.url.match(pattern);
+        const pattern = /^https?:\/\/kenkoooo\.com\/atcoder\/\?user=.*#\/table\/.*/g;
+        const result = tab.url.match(pattern);
         if(result === null){
             // Tableページでないならば
             return false;
@@ -29,15 +29,15 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
         
         // Tableページならば
         // アクティブタブにメッセージを送信する
-        var queryInfo = {
+        const queryInfo = {
             active: true,
             windowId: chrome.windows.WINDOW_ID_CURRENT
         };
 
         chrome.tabs.query(queryInfo, function(result){
             // 配列の先頭に現在のタブが入っている
-            var currentTab = result.shift();
-            var message = {};
+            const currentTab = result.shift();
+            const message = {};
             chrome.tabs.sendMessage(currentTab.id, message, function(){});
         });
         return true;
