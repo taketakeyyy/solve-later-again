@@ -26,7 +26,7 @@
     });
 
     function make_base_html(){
-        /* Aolve Later Again セクションの基本的なHTMLを作成する */
+        /* Solve Later Again セクションの基本的なHTMLを作成する */
         const html = document.createElement("div");
         html.classList.add("row");
         
