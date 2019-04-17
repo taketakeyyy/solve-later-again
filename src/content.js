@@ -28,6 +28,7 @@
     function make_base_html(){
         /* Solve Later Again セクションの基本的なHTMLを作成する */
         const html = document.createElement("div");
+        html.setAttribute("id", "sla_root");
         html.classList.add("row");
         
         const h2 = document.createElement("h2");
@@ -172,9 +173,8 @@
             const checkbox = document.createElement("input");
             checkbox.setAttribute("type", "checkbox");
             checkbox.checked = false;
-            checkbox.classList.add("contest_name");
             checkbox.setAttribute("contest_name", now_contest_name);
-            checkbox.classList.add("problem_name");
+            checkbox.addEventListener("click", change_problem_checkbox);
             if(row_num === 5){
                 // ABC, ARCのとき
                 if(tabindex%row_num === 2){ checkbox.setAttribute("problem_name", "a"); }
@@ -182,6 +182,7 @@
                 else if(tabindex%row_num === 4){ checkbox.setAttribute("problem_name", "c"); }
                 else if(tabindex%row_num === 0){ checkbox.setAttribute("problem_name", "d"); }
                 tds[i].insertBefore(checkbox, tds[i].firstChild);
+                continue;
             }
             else if(row_num === 7){
                 // AGCのとき
@@ -192,8 +193,71 @@
                 else if(tabindex%row_num === 6){ checkbox.setAttribute("problem_name", "e"); }
                 else if(tabindex%row_num === 0){ checkbox.setAttribute("problem_name", "f"); }
                 tds[i].insertBefore(checkbox, tds[i].firstChild);
+                continue;
             }
         }
+    }
+
+
+    function change_problem_checkbox(e){
+        /* 問題のチェックボックスがクリックされたときの処理
+        Args:
+            e(event): クリックされたチェックボックスのイベント
+        */
+
+        if(e.target.checked){
+            // Solve Later Againテーブルにこの問題を追加する
+            const tr = document.createElement("tr");
+            tr.setAttribute("id", "sla_"+e.target.getAttribute("contest_name")+"_"+e.target.getAttribute("problem_name"));
+
+            const td1 = document.createElement("td");
+            const a = e.target.parentNode.getElementsByTagName("a")[0].cloneNode(true);
+            td1.appendChild(a);
+
+            const td2 = document.createElement("td");
+            const checkbox2 = document.createElement("input");
+            checkbox2.setAttribute("type", "checkbox");
+            checkbox2.checked = false;
+            td2.appendChild(checkbox2);
+
+            const td3 = document.createElement("td");
+            const checkbox3 = document.createElement("input");
+            checkbox3.setAttribute("type", "checkbox");
+            checkbox3.checked = false;
+            td3.appendChild(checkbox3);
+
+            const td4 = document.createElement("td");
+            const checkbox4 = document.createElement("input");
+            checkbox4.setAttribute("type", "checkbox");
+            checkbox4.checked = false;
+            td4.appendChild(checkbox4);
+
+            const td5 = document.createElement("td");
+            const button_del = document.createElement("input");
+            button_del.setAttribute("type", "button");
+            button_del.setAttribute("value", "Delete");
+            button_del.classList.add("btn");
+            button_del.classList.add("btn-secondary");
+            td5.appendChild(button_del);
+
+            tr.appendChild(td1);
+            tr.appendChild(td2);
+            tr.appendChild(td3);
+            tr.appendChild(td4);
+            tr.appendChild(td5);
+
+            // Solve Later Againのtbodyに、tr要素を追加する
+            const sla_root = document.getElementById("sla_root");
+            const tbody = sla_root.getElementsByTagName("tbody")[0];
+            tbody.appendChild(tr);
+        }
+        else{
+            // Solve Later Againテーブルからこの問題を削除する
+            const id = "sla_" + e.target.getAttribute("contest_name") + "_" + e.target.getAttribute("problem_name");
+            const elem_del = document.getElementById(id);
+            elem_del.parentNode.removeChild(elem_del);
+        }
+        
     }
 })();
 
