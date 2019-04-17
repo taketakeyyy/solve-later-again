@@ -166,32 +166,31 @@
             const tabindex = parseInt(tds[i].getAttribute("tabindex"));
             if(tabindex%row_num === 1){
                 // contest の列なので、チェックボックスは入れない
-                now_contest_name = tds[i].getElementsByTagName("a")[0].innerText;
+                now_contest_name = tds[i].getElementsByTagName("a")[0].innerText.toLowerCase();
                 continue;
             }
 
             const checkbox = document.createElement("input");
             checkbox.setAttribute("type", "checkbox");
             checkbox.checked = false;
-            checkbox.setAttribute("contest_name", now_contest_name);
             checkbox.addEventListener("click", click_problem_checkbox);
             if(row_num === 5){
                 // ABC, ARCのとき
-                if(tabindex%row_num === 2){ checkbox.setAttribute("problem_name", "a"); }
-                else if(tabindex%row_num === 3){ checkbox.setAttribute("problem_name", "b"); }
-                else if(tabindex%row_num === 4){ checkbox.setAttribute("problem_name", "c"); }
-                else if(tabindex%row_num === 0){ checkbox.setAttribute("problem_name", "d"); }
+                if(tabindex%row_num === 2){ checkbox.setAttribute("id", "chkbox_sla_"+now_contest_name+"_"+"a"); }
+                else if(tabindex%row_num === 3){ checkbox.setAttribute("id", "chkbox_sla_"+now_contest_name+"_"+"b"); }
+                else if(tabindex%row_num === 4){ checkbox.setAttribute("id", "chkbox_sla_"+now_contest_name+"_"+"c"); }
+                else if(tabindex%row_num === 0){ checkbox.setAttribute("id", "chkbox_sla_"+now_contest_name+"_"+"d"); }
                 tds[i].insertBefore(checkbox, tds[i].firstChild);
                 continue;
             }
             else if(row_num === 7){
                 // AGCのとき
-                if(tabindex%row_num === 2){ checkbox.setAttribute("problem_name", "a"); }
-                else if(tabindex%row_num === 3){ checkbox.setAttribute("problem_name", "b"); }
-                else if(tabindex%row_num === 4){ checkbox.setAttribute("problem_name", "c"); }
-                else if(tabindex%row_num === 5){ checkbox.setAttribute("problem_name", "d"); }
-                else if(tabindex%row_num === 6){ checkbox.setAttribute("problem_name", "e"); }
-                else if(tabindex%row_num === 0){ checkbox.setAttribute("problem_name", "f"); }
+                if(tabindex%row_num === 2){ checkbox.setAttribute("id", "chkbox_sla_"+now_contest_name+"_"+"a"); }
+                else if(tabindex%row_num === 3){ checkbox.setAttribute("id", "chkbox_sla_"+now_contest_name+"_"+"b"); }
+                else if(tabindex%row_num === 4){ checkbox.setAttribute("id", "chkbox_sla_"+now_contest_name+"_"+"c"); }
+                else if(tabindex%row_num === 5){ checkbox.setAttribute("id", "chkbox_sla_"+now_contest_name+"_"+"d"); }
+                else if(tabindex%row_num === 6){ checkbox.setAttribute("id", "chkbox_sla_"+now_contest_name+"_"+"e"); }
+                else if(tabindex%row_num === 0){ checkbox.setAttribute("id", "chkbox_sla_"+now_contest_name+"_"+"f"); }
                 tds[i].insertBefore(checkbox, tds[i].firstChild);
                 continue;
             }
@@ -205,10 +204,14 @@
             e(event): クリックされたチェックボックスのイベント
         */
 
+        // checkboxのidは、"chkbox_sla_[contest_name]_[promlem]"
+        const id_base = e.target.getAttribute("id").slice(7);
+
         if(e.target.checked){
             // Solve Later Againテーブルにこの問題を追加する
             const tr = document.createElement("tr");
-            tr.setAttribute("id", "sla_"+e.target.getAttribute("contest_name")+"_"+e.target.getAttribute("problem_name"));
+            // idを、"tr_sla_[contest_name]_[problem]" にする
+            tr.setAttribute("id", "tr_"+id_base);
 
             const td1 = document.createElement("td");
             const a = e.target.parentNode.getElementsByTagName("a")[0].cloneNode(true);
@@ -256,8 +259,7 @@
         }
         else{
             // Solve Later Againテーブルからこの問題を削除する
-            const id = "sla_" + e.target.getAttribute("contest_name") + "_" + e.target.getAttribute("problem_name");
-            const elem_del = document.getElementById(id);
+            const elem_del = document.getElementById("tr_"+id_base);
             elem_del.parentNode.removeChild(elem_del);
         }
     }
