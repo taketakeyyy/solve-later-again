@@ -131,33 +131,43 @@
 
 
     function make_checkboxes(){
-        /* 各問題に、「あとで解く」に追加する用のチェックボックスを作成する */
+        /* 各問題に、Solve Later Againテーブルに問題を追加するためのチェックボックスを作成する */
         const h2s = document.getElementsByTagName("h2");
         for(let i = 0; i < h2s.length; i++){
             if(h2s[i].innerText == "AtCoder Beginner Contest"){
-                append_checkboxes(h2s[i], 5);
+                append_checkboxes(h2s[i], 5, 0);
             }
             else if(h2s[i].innerText == "AtCoder Regular Contest"){
-                append_checkboxes(h2s[i], 5);
+                append_checkboxes(h2s[i], 5, 0);
             }
             else if(h2s[i].innerText == "AtCoder Grand Contest"){
-                append_checkboxes(h2s[i], 7);
+                append_checkboxes(h2s[i], 7, 0);
             }
         }
-
     }
 
 
-    function append_checkboxes(elem_h2, row_num){
+    function append_checkboxes(elem_h2, row_num, try_count){
         /* ABC, ARC, AGCの各問題にチェックボックスを追加する
         Args:
             elem_h2: テーブルのh2要素
             row_num(int): テーブルの列数
         */
+        if(try_count >= 5){ return false; }
+
         const root_div = elem_h2.parentNode;
         const tbody = root_div.getElementsByTagName("tbody")[0];
         const tds = tbody.getElementsByTagName("td");
         let now_contest_name = "";
+
+        if(tds.length === 1){
+            // DOMが構成されていないときに実行されることがある場合、非同期処理で少し待って、再度実行させる
+            setTimeout(() => {
+                append_checkboxes(elem_h2, row_num, try_count+1);                
+            }, 500);
+            return false;
+        }
+        
         for(let i=0; i<tds.length; i++){
             if(!tds[i].hasAttribute("tabindex")){
                 continue;
@@ -286,6 +296,6 @@
         const chkbox = document.getElementById("chkbox_"+id_base);
         chkbox.checked = false;
     }
-    
+
 })();
 
