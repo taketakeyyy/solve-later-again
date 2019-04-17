@@ -130,7 +130,48 @@
 
     function make_checkboxes(){
         /* 各問題に、「あとで解く」に追加する用のチェックボックスを作成する */
+        // tdのtabindex="2"以上にチェックボックスを追加する
+        // とりあえず、ABC,ARC,AGCのみ対応させる
+        const h2s = document.getElementsByTagName("h2");
+        for(let i = 0; i < h2s.length; i++){
+            if(h2s[i].innerText == "AtCoder Beginner Contest"){
+                append_checkboxes_ABC(h2s[i]);
+            }
+        }
 
+
+    }
+
+    function append_checkboxes_ABC(elem_h2){
+        // ABCの各問題にチェックボックスを追加する
+        const root_div = elem_h2.parentNode;
+        const tbody = root_div.getElementsByTagName("tbody")[0];
+        const tds = tbody.getElementsByTagName("td");
+        let now_contest_name = "";
+        for(let i=0; i<tds.length; i++){
+            if(!tds[i].hasAttribute("tabindex")){
+                continue;
+            }
+
+            const tabindex = parseInt(tds[i].getAttribute("tabindex"));
+            if(tabindex%5 === 1){
+                // contest の列なので、チェックボックスは入れない
+                now_contest_name = tds[i].getElementsByTagName("a")[0].innerText;
+                continue;
+            }
+
+            const checkbox = document.createElement("input");
+            checkbox.setAttribute("type", "checkbox");
+            checkbox.checked = false;
+            checkbox.classList.add("contest_name");
+            checkbox.setAttribute("contest_name", now_contest_name);
+            checkbox.classList.add("problem_name");
+            if(tabindex%5 === 2){ checkbox.setAttribute("problem_name", "a"); }
+            else if(tabindex%5 === 3){ checkbox.setAttribute("problem_name", "b"); }
+            else if(tabindex%5 === 4){ checkbox.setAttribute("problem_name", "c"); }
+            else if(tabindex%5 === 0){ checkbox.setAttribute("problem_name", "d"); }
+            tds[i].insertBefore(checkbox, tds[i].firstChild);
+        }
     }
 
 })();
