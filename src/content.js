@@ -128,25 +128,31 @@
         return html;
     }
 
+
     function make_checkboxes(){
         /* 各問題に、「あとで解く」に追加する用のチェックボックスを作成する */
-        // tdのtabindex="2"以上にチェックボックスを追加する
-        // とりあえず、ABC,ARC,AGCのみ対応させる
         const h2s = document.getElementsByTagName("h2");
         for(let i = 0; i < h2s.length; i++){
             if(h2s[i].innerText == "AtCoder Beginner Contest"){
-                append_checkboxes_my4_row(h2s[i]);
+                append_checkboxes(h2s[i], 5);
             }
             else if(h2s[i].innerText == "AtCoder Regular Contest"){
-                append_checkboxes_my4_row(h2s[i]);
+                append_checkboxes(h2s[i], 5);
+            }
+            else if(h2s[i].innerText == "AtCoder Grand Contest"){
+                append_checkboxes(h2s[i], 7);
             }
         }
 
-
     }
 
-    function append_checkboxes_my4_row(elem_h2){
-        // ABC, ARCの各問題にチェックボックスを追加する
+
+    function append_checkboxes(elem_h2, row_num){
+        /* ABC, ARC, AGCの各問題にチェックボックスを追加する
+        Args:
+            elem_h2: テーブルのh2要素
+            row_num(int): テーブルの列数
+        */
         const root_div = elem_h2.parentNode;
         const tbody = root_div.getElementsByTagName("tbody")[0];
         const tds = tbody.getElementsByTagName("td");
@@ -157,7 +163,7 @@
             }
 
             const tabindex = parseInt(tds[i].getAttribute("tabindex"));
-            if(tabindex%5 === 1){
+            if(tabindex%row_num === 1){
                 // contest の列なので、チェックボックスは入れない
                 now_contest_name = tds[i].getElementsByTagName("a")[0].innerText;
                 continue;
@@ -169,13 +175,25 @@
             checkbox.classList.add("contest_name");
             checkbox.setAttribute("contest_name", now_contest_name);
             checkbox.classList.add("problem_name");
-            if(tabindex%5 === 2){ checkbox.setAttribute("problem_name", "a"); }
-            else if(tabindex%5 === 3){ checkbox.setAttribute("problem_name", "b"); }
-            else if(tabindex%5 === 4){ checkbox.setAttribute("problem_name", "c"); }
-            else if(tabindex%5 === 0){ checkbox.setAttribute("problem_name", "d"); }
-            tds[i].insertBefore(checkbox, tds[i].firstChild);
+            if(row_num === 5){
+                // ABC, ARCのとき
+                if(tabindex%row_num === 2){ checkbox.setAttribute("problem_name", "a"); }
+                else if(tabindex%row_num === 3){ checkbox.setAttribute("problem_name", "b"); }
+                else if(tabindex%row_num === 4){ checkbox.setAttribute("problem_name", "c"); }
+                else if(tabindex%row_num === 0){ checkbox.setAttribute("problem_name", "d"); }
+                tds[i].insertBefore(checkbox, tds[i].firstChild);
+            }
+            else if(row_num === 7){
+                // AGCのとき
+                if(tabindex%row_num === 2){ checkbox.setAttribute("problem_name", "a"); }
+                else if(tabindex%row_num === 3){ checkbox.setAttribute("problem_name", "b"); }
+                else if(tabindex%row_num === 4){ checkbox.setAttribute("problem_name", "c"); }
+                else if(tabindex%row_num === 5){ checkbox.setAttribute("problem_name", "d"); }
+                else if(tabindex%row_num === 6){ checkbox.setAttribute("problem_name", "e"); }
+                else if(tabindex%row_num === 0){ checkbox.setAttribute("problem_name", "f"); }
+                tds[i].insertBefore(checkbox, tds[i].firstChild);
+            }
         }
     }
-
 })();
 
