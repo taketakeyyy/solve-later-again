@@ -135,15 +135,18 @@
         const h2s = document.getElementsByTagName("h2");
         for(let i = 0; i < h2s.length; i++){
             if(h2s[i].innerText == "AtCoder Beginner Contest"){
-                append_checkboxes_ABC(h2s[i]);
+                append_checkboxes_my4_row(h2s[i]);
+            }
+            else if(h2s[i].innerText == "AtCoder Regular Contest"){
+                append_checkboxes_my4_row(h2s[i]);
             }
         }
 
 
     }
 
-    function append_checkboxes_ABC(elem_h2){
-        // ABCの各問題にチェックボックスを追加する
+    function append_checkboxes_my4_row(elem_h2){
+        // ABC, ARCの各問題にチェックボックスを追加する
         const root_div = elem_h2.parentNode;
         const tbody = root_div.getElementsByTagName("tbody")[0];
         const tds = tbody.getElementsByTagName("td");
