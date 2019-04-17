@@ -173,7 +173,7 @@
             const checkbox = document.createElement("input");
             checkbox.setAttribute("type", "checkbox");
             checkbox.checked = false;
-            checkbox.addEventListener("click", click_problem_checkbox);
+            checkbox.addEventListener("click", click_chkbox_sla_project_problem);
             if(row_num === 5){
                 // ABC, ARCのとき
                 if(tabindex%row_num === 2){ checkbox.setAttribute("id", "chkbox_sla_"+now_contest_name+"_"+"a"); }
@@ -198,7 +198,7 @@
     }
 
 
-    function click_problem_checkbox(e){
+    function click_chkbox_sla_project_problem(e){
         /* 問題のチェックボックスがクリックされたときの処理
         Args:
             e(event): クリックされたチェックボックスのイベント
@@ -243,7 +243,7 @@
             button_del.classList.add("btn");
             button_del.classList.add("btn-secondary");
             button_del.classList.add("btn-sla-delete");
-            button_del.addEventListener("click", click_sla_delete_btn);
+            button_del.addEventListener("click", click_btn_sla_delete);
             td5.appendChild(button_del);
 
             tr.appendChild(td1);
@@ -264,7 +264,7 @@
         }
     }
 
-    function click_sla_delete_btn(e){
+    function click_btn_sla_delete(e){
         /* Deleteボタンをクリックしたときの処理 
         Args:
             e(event): クリックされたボタンのイベント
