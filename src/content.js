@@ -173,7 +173,7 @@
             const checkbox = document.createElement("input");
             checkbox.setAttribute("type", "checkbox");
             checkbox.checked = false;
-            checkbox.addEventListener("click", click_chkbox_sla_project_problem);
+            checkbox.addEventListener("click", click_chkbox_sla);
             if(row_num === 5){
                 // ABC, ARCのとき
                 if(tabindex%row_num === 2){ checkbox.setAttribute("id", "chkbox_sla_"+now_contest_name+"_"+"a"); }
@@ -198,7 +198,7 @@
     }
 
 
-    function click_chkbox_sla_project_problem(e){
+    function click_chkbox_sla(e){
         /* 問題のチェックボックスがクリックされたときの処理
         Args:
             e(event): クリックされたチェックボックスのイベント
@@ -240,10 +240,11 @@
             const button_del = document.createElement("input");
             button_del.setAttribute("type", "button");
             button_del.setAttribute("value", "Delete");
+            button_del.setAttribute("id", "del_btn_"+id_base);
             button_del.classList.add("btn");
             button_del.classList.add("btn-secondary");
             button_del.classList.add("btn-sla-delete");
-            button_del.addEventListener("click", click_btn_sla_delete);
+            button_del.addEventListener("click", click_del_btn_sla);
             td5.appendChild(button_del);
 
             tr.appendChild(td1);
@@ -264,12 +265,27 @@
         }
     }
 
-    function click_btn_sla_delete(e){
+    function click_del_btn_sla(e){
         /* Deleteボタンをクリックしたときの処理 
+
+        ・Solve Later Againのテーブルからこの問題を削除する
+        ・この問題のチェックボックスのチェックを外す
+
         Args:
             e(event): クリックされたボタンのイベント
         */
-       ;
+    
+        // Deleteボタンのidは、"del_btn_sla_project_problem"
+        const id_base = e.target.getAttribute("id").slice(8);
+
+        // Solve Later Againのテーブルからこの問題を削除する
+        const del_tr = document.getElementById("tr_"+id_base);
+        del_tr.parentNode.removeChild(del_tr);
+
+        // この問題のチェックボックスのチェックを外す
+        const chkbox = document.getElementById("chkbox_"+id_base);
+        chkbox.checked = false;
     }
+    
 })();
 
