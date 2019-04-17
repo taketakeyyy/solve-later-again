@@ -1,0 +1,9 @@
+.btn.btn-sla-delete {
+    padding-top: .10rem;
+    padding-bottom: .10rem;
+    width: 80%;
+}
+
+.table td.td-sla-delete{
+    text-align: center;
+}

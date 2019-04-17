@@ -174,7 +174,7 @@
             checkbox.setAttribute("type", "checkbox");
             checkbox.checked = false;
             checkbox.setAttribute("contest_name", now_contest_name);
-            checkbox.addEventListener("click", change_problem_checkbox);
+            checkbox.addEventListener("click", click_problem_checkbox);
             if(row_num === 5){
                 // ABC, ARCのとき
                 if(tabindex%row_num === 2){ checkbox.setAttribute("problem_name", "a"); }
@@ -199,7 +199,7 @@
     }
 
 
-    function change_problem_checkbox(e){
+    function click_problem_checkbox(e){
         /* 問題のチェックボックスがクリックされたときの処理
         Args:
             e(event): クリックされたチェックボックスのイベント
@@ -233,11 +233,14 @@
             td4.appendChild(checkbox4);
 
             const td5 = document.createElement("td");
+            td5.classList.add("td-sla-delete");
             const button_del = document.createElement("input");
             button_del.setAttribute("type", "button");
             button_del.setAttribute("value", "Delete");
             button_del.classList.add("btn");
             button_del.classList.add("btn-secondary");
+            button_del.classList.add("btn-sla-delete");
+            button_del.addEventListener("click", click_sla_delete_btn);
             td5.appendChild(button_del);
 
             tr.appendChild(td1);
@@ -257,7 +260,14 @@
             const elem_del = document.getElementById(id);
             elem_del.parentNode.removeChild(elem_del);
         }
-        
+    }
+
+    function click_sla_delete_btn(e){
+        /* Deleteボタンをクリックしたときの処理 
+        Args:
+            e(event): クリックされたボタンのイベント
+        */
+       ;
     }
 })();
 
