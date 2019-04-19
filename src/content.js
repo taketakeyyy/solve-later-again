@@ -230,6 +230,8 @@
             const td2 = document.createElement("td");
             const checkbox2 = document.createElement("input");
             checkbox2.setAttribute("type", "checkbox");
+            checkbox2.setAttribute("id", "chkbox_solved1_"+id_base);
+            checkbox2.addEventListener("click", click_chkbox_solved_sla);
             checkbox2.checked = false;
             checkbox2.disabled = false;
             td2.appendChild(checkbox2);
@@ -237,6 +239,8 @@
             const td3 = document.createElement("td");
             const checkbox3 = document.createElement("input");
             checkbox3.setAttribute("type", "checkbox");
+            checkbox3.setAttribute("id", "chkbox_solved2_"+id_base);
+            checkbox3.addEventListener("click", click_chkbox_solved_sla);
             checkbox3.checked = false;
             checkbox3.disabled = true;
             td3.appendChild(checkbox3);
@@ -244,6 +248,8 @@
             const td4 = document.createElement("td");
             const checkbox4 = document.createElement("input");
             checkbox4.setAttribute("type", "checkbox");
+            checkbox4.setAttribute("id", "chkbox_solved3_"+id_base);
+            checkbox4.addEventListener("click", click_chkbox_solved_sla);
             checkbox4.checked = false;
             checkbox4.disabled = true;
             td4.appendChild(checkbox4);
@@ -281,8 +287,8 @@
     function click_del_btn_sla(e){
         /* Deleteボタンをクリックしたときの処理 
 
-        ・Solve Later Againのテーブルからこの問題を削除する
-        ・この問題のチェックボックスのチェックを外す
+        * Solve Later Againのテーブルからこの問題を削除する
+        * この問題のチェックボックスのチェックを外す
 
         Args:
             e(event): クリックされたボタンのイベント
@@ -299,6 +305,41 @@
         const chkbox = document.getElementById("chkbox_"+id_base);
         chkbox.checked = false;
     }
+    
 
+    function click_chkbox_solved_sla(e){
+        /* Solved Later Againテーブルの Solved のチェックボックスをクリックしたときの処理
+        
+        * Solved1のチェックが入ったら、クリックされた年月日をいれて、Solved2をクリック可能にする
+        * Solved2のチェックが入ったら、クリックされた年月日をいれて、Solved3をクリック可能にする
+        * Solved3のチェックが入ったら、クリックされた年月日をいれる
+
+        Args:
+            e(event): クリックされたチェックボックスのイベント
+        */
+
+        // このチェックボックスのidは、"chkbox_solved*_sla_project_problem"
+        const base_id = e.target.getAttribute("id").slice(15);
+        const solved_num = parseInt(e.target.getAttribute("id")[13], 10);
+
+        const func = (solved_num) => {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = now.getMonth();
+            const day = now.getDate();
+            const wday = now.getDay();
+            const wdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+            e.target.parentNode.innerText = year + "/" + (month+1) + "/" + day + "(" + wdays[wday] + ")";
+
+            if(solved_num < 3){
+                const chkbox_solved_next = document.getElementById("chkbox_solved"+(solved_num+1)+"_"+base_id);
+                chkbox_solved_next.disabled = false;
+            }
+        }
+
+        func(solved_num);
+    }
+
+    
 })();
 
