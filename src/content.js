@@ -16,6 +16,8 @@
     */
 
     chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse){
+        if(document.getElementById("sla_root") !== null){ return false; }
+
         const root_div = document.getElementById('root');
 
         const target_div= root_div.firstElementChild.getElementsByClassName("container")[0].firstElementChild;
@@ -305,7 +307,7 @@
         const chkbox = document.getElementById("chkbox_"+id_base);
         chkbox.checked = false;
     }
-    
+
 
     function click_chkbox_solved_sla(e){
         /* Solved Later Againテーブルの Solved のチェックボックスをクリックしたときの処理
