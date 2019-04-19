@@ -231,18 +231,21 @@
             const checkbox2 = document.createElement("input");
             checkbox2.setAttribute("type", "checkbox");
             checkbox2.checked = false;
+            checkbox2.disabled = false;
             td2.appendChild(checkbox2);
 
             const td3 = document.createElement("td");
             const checkbox3 = document.createElement("input");
             checkbox3.setAttribute("type", "checkbox");
             checkbox3.checked = false;
+            checkbox3.disabled = true;
             td3.appendChild(checkbox3);
 
             const td4 = document.createElement("td");
             const checkbox4 = document.createElement("input");
             checkbox4.setAttribute("type", "checkbox");
             checkbox4.checked = false;
+            checkbox4.disabled = true;
             td4.appendChild(checkbox4);
 
             const td5 = document.createElement("td");
