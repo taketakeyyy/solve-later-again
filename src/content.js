@@ -343,5 +343,13 @@
     }
 
     
+    function save_solve_later_again(base_id){
+        // https://dackdive.hateblo.jp/entry/2017/07/27/100000
+        // https://github.com/taketakeyyy/my-practice/blob/master/dotinstall/MyExtensions/04_OptionsUI/options.js
+        chrome.storage.sync.set({
+            base_id: [base_id, ]
+        });
+
+    }
 })();
 
