@@ -25,6 +25,9 @@
         target_div.insertBefore(insert_html, target_div.firstChild);
 
         make_checkboxes();
+
+        // 保存データを取得して、状態を反映させる
+        load_storage();
     });
 
     function make_base_html(){
@@ -397,6 +400,30 @@
         }
 
         chrome.storage.sync.set(saving_data);
+    }
+
+    function load_storage(){
+        chrome.storage.sync.get(null, function(loaded_data){
+            for(let base_id in loaded_data){
+                // SLAテーブルの状態を反映させる
+                const tr = document.createElement("tr");
+                tr.setAttribute("id", "tr_"+base_id);
+                // DIV要素を4つ追加する必要がある
+
+                // この辺、ほかの処理と共通化できるはずなので、家に帰ってからやる
+                // (´･´_`･`)
+
+                for(let i=1; i<=3; i++){
+                    if(loaded_data[base_id]["solved"+String(i)] === false){
+                        // チェックボックス要素を作成する
+                        const chkbox = document.createElement("input");
+                        chkbox.setAttribute("id", "chkbox_solved"+String(i)+"_"+base_id);
+
+                    }
+                }
+
+            }
+        });
     }
 })();
 
