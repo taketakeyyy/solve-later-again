@@ -24,6 +24,8 @@
         const insert_html = make_base_html();
         target_div.insertBefore(insert_html, target_div.firstChild);
 
+        // ここのmake_checkboxes()が正常に成功したあと、その下のload_storage()を実行してほしいので、
+        // Promiseで書きなおそう。
         make_checkboxes();
 
         // 保存データを取得して、状態を反映させる
@@ -169,6 +171,7 @@
 
         if(tds.length === 1){
             // DOMが構成されていないときに実行されることがある場合、非同期処理で少し待って、再度実行させる
+            // Promiseで書きなおそう。
             setTimeout(() => {
                 append_checkboxes(elem_h2, row_num, try_count+1);                
             }, WAIT_TIME);
@@ -214,6 +217,65 @@
         }
     }
 
+    function make_new_tr_sla(base_id, a_tag){
+        // SLAテーブルの新しいtr要素を作成する
+        const tr = document.createElement("tr");
+        // idを、"tr_sla_[contest_name]_[problem]" にする
+        tr.setAttribute("id", "tr_"+base_id);
+
+        const td1 = document.createElement("td");
+        td1.appendChild(a_tag);
+
+        const td2 = document.createElement("td");
+        const checkbox2 = document.createElement("input");
+        checkbox2.setAttribute("type", "checkbox");
+        checkbox2.setAttribute("id", "chkbox_solved1_"+base_id);
+        checkbox2.addEventListener("click", click_chkbox_solved_sla);
+        checkbox2.checked = false;
+        checkbox2.disabled = false;
+        td2.appendChild(checkbox2);
+
+        const td3 = document.createElement("td");
+        const checkbox3 = document.createElement("input");
+        checkbox3.setAttribute("type", "checkbox");
+        checkbox3.setAttribute("id", "chkbox_solved2_"+base_id);
+        checkbox3.addEventListener("click", click_chkbox_solved_sla);
+        checkbox3.checked = false;
+        checkbox3.disabled = true;
+        td3.appendChild(checkbox3);
+
+        const td4 = document.createElement("td");
+        const checkbox4 = document.createElement("input");
+        checkbox4.setAttribute("type", "checkbox");
+        checkbox4.setAttribute("id", "chkbox_solved3_"+base_id);
+        checkbox4.addEventListener("click", click_chkbox_solved_sla);
+        checkbox4.checked = false;
+        checkbox4.disabled = true;
+        td4.appendChild(checkbox4);
+
+        const td5 = document.createElement("td");
+        td5.classList.add("td-sla-delete");
+        const button_del = document.createElement("input");
+        button_del.setAttribute("type", "button");
+        button_del.setAttribute("value", "Delete");
+        button_del.setAttribute("id", "del_btn_"+base_id);
+        button_del.classList.add("btn");
+        button_del.classList.add("btn-secondary");
+        button_del.classList.add("btn-sla-delete");
+        button_del.addEventListener("click", click_del_btn_sla);
+        td5.appendChild(button_del);
+
+        tr.appendChild(td1);
+        tr.appendChild(td2);
+        tr.appendChild(td3);
+        tr.appendChild(td4);
+        tr.appendChild(td5);
+
+        // Solve Later Againのtbodyに、tr要素を追加する
+        const sla_root = document.getElementById("sla_root");
+        const tbody = sla_root.getElementsByTagName("tbody")[0];
+        tbody.appendChild(tr);
+    }
 
     function click_chkbox_sla(e){
         /* 問題のチェックボックスがクリックされたときの処理
@@ -226,63 +288,8 @@
 
         if(e.target.checked){
             // Solve Later Againテーブルにこの問題を追加する
-            const tr = document.createElement("tr");
-            // idを、"tr_sla_[contest_name]_[problem]" にする
-            tr.setAttribute("id", "tr_"+base_id);
-
-            const td1 = document.createElement("td");
-            const a = e.target.parentNode.getElementsByTagName("a")[0].cloneNode(true);
-            td1.appendChild(a);
-
-            const td2 = document.createElement("td");
-            const checkbox2 = document.createElement("input");
-            checkbox2.setAttribute("type", "checkbox");
-            checkbox2.setAttribute("id", "chkbox_solved1_"+base_id);
-            checkbox2.addEventListener("click", click_chkbox_solved_sla);
-            checkbox2.checked = false;
-            checkbox2.disabled = false;
-            td2.appendChild(checkbox2);
-
-            const td3 = document.createElement("td");
-            const checkbox3 = document.createElement("input");
-            checkbox3.setAttribute("type", "checkbox");
-            checkbox3.setAttribute("id", "chkbox_solved2_"+base_id);
-            checkbox3.addEventListener("click", click_chkbox_solved_sla);
-            checkbox3.checked = false;
-            checkbox3.disabled = true;
-            td3.appendChild(checkbox3);
-
-            const td4 = document.createElement("td");
-            const checkbox4 = document.createElement("input");
-            checkbox4.setAttribute("type", "checkbox");
-            checkbox4.setAttribute("id", "chkbox_solved3_"+base_id);
-            checkbox4.addEventListener("click", click_chkbox_solved_sla);
-            checkbox4.checked = false;
-            checkbox4.disabled = true;
-            td4.appendChild(checkbox4);
-
-            const td5 = document.createElement("td");
-            td5.classList.add("td-sla-delete");
-            const button_del = document.createElement("input");
-            button_del.setAttribute("type", "button");
-            button_del.setAttribute("value", "Delete");
-            button_del.setAttribute("id", "del_btn_"+base_id);
-            button_del.classList.add("btn");
-            button_del.classList.add("btn-secondary");
-            button_del.classList.add("btn-sla-delete");
-            button_del.addEventListener("click", click_del_btn_sla);
-            td5.appendChild(button_del);
-
-            tr.appendChild(td1);
-            tr.appendChild(td2);
-            tr.appendChild(td3);
-            tr.appendChild(td4);
-            tr.appendChild(td5);
-
-            // Solve Later Againのtbodyに、tr要素を追加する
-            const sla_root = document.getElementById("sla_root");
-            const tbody = sla_root.getElementsByTagName("tbody")[0];
-            tbody.appendChild(tr);
+            const a_tag = e.target.parentNode.getElementsByTagName("a")[0].cloneNode(true);
+            make_new_tr_sla(base_id, a_tag);
         }
         else{
             // Solve Later Againテーブルからこの問題を削除する
@@ -371,10 +378,10 @@
 
         Notes:
             保存形式は、以下のような感じ。
-              - チェックボックスのとき、false
+              - チェックボックスのとき、null
               - 日付が入ってる場合、それをstr型で保存
             例
-            {base_id: {"solved1": "2019/4/21(Sun)"}, {"solved2": false}, {"solved3": false}}
+            {base_id: {"solved1": "2019/4/21(Sun)"}, {"solved2": null}, {"solved3": null}}
 
         Refs:
             https://dackdive.hateblo.jp/entry/2017/07/27/100000
@@ -396,32 +403,33 @@
                 saving_data[base_id]["solved"+String(i)] = div.innerText;
                 continue;
             }
-            saving_data[base_id]["solved"+String(i)] = false;
+            saving_data[base_id]["solved"+String(i)] = null;
         }
 
         chrome.storage.sync.set(saving_data);
     }
 
+
     function load_storage(){
-        chrome.storage.sync.get(null, function(loaded_data){
+        chrome.stor
+        /age.sync.get(null, function(loaded_data){
             for(let base_id in loaded_data){
-                // SLAテーブルの状態を反映させる
-                const tr = document.createElement("tr");
-                tr.setAttribute("id", "tr_"+base_id);
-                // DIV要素を4つ追加する必要がある
+                // SLAテーブルにtr要素を作成する
+                const target_chkbox = document.getElementById("chkbox_"+base_id);
+                const a_tag = target_chkbox.parentNode.getElementsByTagName("a")[0].cloneNode(true);
+                make_new_tr_sla(base_id, a_tag);
 
-                // この辺、ほかの処理と共通化できるはずなので、家に帰ってからやる
-                // (´･´_`･`)
-
+                // tr要素のSolved列が年月日の場合はそれに変更する
                 for(let i=1; i<=3; i++){
-                    if(loaded_data[base_id]["solved"+String(i)] === false){
-                        // チェックボックス要素を作成する
-                        const chkbox = document.createElement("input");
-                        chkbox.setAttribute("id", "chkbox_solved"+String(i)+"_"+base_id);
-
-                    }
+                    const solved_date = loaded_data[base_id]["solved"+String(i)];
+                    if(solved_date === null){ continue; }
+                    const parent_td = document.getElementById("chkbox_solved"+String(i)+"_"+base_id).parentNode;
+                    parent_td.innerText = "";
+                    const div = document.createElement("div");
+                    div.setAttribute("id", "date_solved"+String(i)+"_"+base_id);
+                    div.innerText = solved_date;
+                    parent_td.appendChild(div);
                 }
-
             }
         });
     }
