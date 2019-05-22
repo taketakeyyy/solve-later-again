@@ -182,7 +182,7 @@
             if(!tds[i].hasAttribute("tabindex")){
                 continue;
             }
-            
+
             if(typeof tds[i].getElementsByTagName("a")[0] === "undefined"){
                 // 問題が存在しないとき、チェックボックスは入れない
                 continue;
@@ -428,8 +428,7 @@
 
 
     function load_storage(){
-        chrome.stor
-        /age.sync.get(null, function(loaded_data){
+        chrome.storage.sync.get(null, function(loaded_data){
             for(let base_id in loaded_data){
                 // SLAテーブルにtr要素を作成する
                 const target_chkbox = document.getElementById("chkbox_"+base_id);
