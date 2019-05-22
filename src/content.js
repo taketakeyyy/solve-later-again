@@ -182,6 +182,11 @@
             if(!tds[i].hasAttribute("tabindex")){
                 continue;
             }
+            
+            if(typeof tds[i].getElementsByTagName("a")[0] === "undefined"){
+                // 問題が存在しないとき、チェックボックスは入れない
+                continue;
+            }
 
             const tabindex = parseInt(tds[i].getAttribute("tabindex"));
             if(tabindex%row_num === 1){
@@ -300,7 +305,7 @@
 
         if(e.target.checked){
             // Solve Later Againテーブルにこの問題を追加する
-            const a_tag = e.target.parentNode.getElementsByTagName("a")[0].cloneNode(true);
+            const a_tag = e.target.parentNode.getElementsByTagName("a")[0].a_elem.cloneNode(true);
             make_new_tr_sla(base_id, a_tag);
         }
         else{
