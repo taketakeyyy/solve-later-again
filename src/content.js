@@ -142,13 +142,13 @@
         const h2s = document.getElementsByTagName("h2");
         for(let i = 0; i < h2s.length; i++){
             if(h2s[i].innerText == "AtCoder Beginner Contest"){
-                append_checkboxes(h2s[i], 5, 0);
+                append_checkboxes(h2s[i], 7, 0);
             }
             else if(h2s[i].innerText == "AtCoder Regular Contest"){
                 append_checkboxes(h2s[i], 5, 0);
             }
             else if(h2s[i].innerText == "AtCoder Grand Contest"){
-                append_checkboxes(h2s[i], 7, 0);
+                append_checkboxes(h2s[i], 8, 0);
             }
         }
     }
@@ -194,8 +194,19 @@
             checkbox.setAttribute("type", "checkbox");
             checkbox.checked = false;
             checkbox.addEventListener("click", click_chkbox_sla);
-            if(row_num === 5){
-                // ABC, ARCのとき
+            if(row_num === 7){
+                // ABCのとき
+                if(tabindex%row_num === 2){ checkbox.setAttribute("id", "chkbox_sla_"+now_contest_name+"_"+"a"); }
+                else if(tabindex%row_num === 3){ checkbox.setAttribute("id", "chkbox_sla_"+now_contest_name+"_"+"b"); }
+                else if(tabindex%row_num === 4){ checkbox.setAttribute("id", "chkbox_sla_"+now_contest_name+"_"+"c"); }
+                else if(tabindex%row_num === 5){ checkbox.setAttribute("id", "chkbox_sla_"+now_contest_name+"_"+"d"); }
+                else if(tabindex%row_num === 6){ checkbox.setAttribute("id", "chkbox_sla_"+now_contest_name+"_"+"e"); }
+                else if(tabindex%row_num === 0){ checkbox.setAttribute("id", "chkbox_sla_"+now_contest_name+"_"+"f"); }
+                tds[i].insertBefore(checkbox, tds[i].firstChild);
+                continue;
+            }
+            else if(row_num === 5){
+                // ARCのとき
                 if(tabindex%row_num === 2){ checkbox.setAttribute("id", "chkbox_sla_"+now_contest_name+"_"+"a"); }
                 else if(tabindex%row_num === 3){ checkbox.setAttribute("id", "chkbox_sla_"+now_contest_name+"_"+"b"); }
                 else if(tabindex%row_num === 4){ checkbox.setAttribute("id", "chkbox_sla_"+now_contest_name+"_"+"c"); }
@@ -203,14 +214,15 @@
                 tds[i].insertBefore(checkbox, tds[i].firstChild);
                 continue;
             }
-            else if(row_num === 7){
+            else if(row_num === 8){
                 // AGCのとき
                 if(tabindex%row_num === 2){ checkbox.setAttribute("id", "chkbox_sla_"+now_contest_name+"_"+"a"); }
                 else if(tabindex%row_num === 3){ checkbox.setAttribute("id", "chkbox_sla_"+now_contest_name+"_"+"b"); }
                 else if(tabindex%row_num === 4){ checkbox.setAttribute("id", "chkbox_sla_"+now_contest_name+"_"+"c"); }
                 else if(tabindex%row_num === 5){ checkbox.setAttribute("id", "chkbox_sla_"+now_contest_name+"_"+"d"); }
                 else if(tabindex%row_num === 6){ checkbox.setAttribute("id", "chkbox_sla_"+now_contest_name+"_"+"e"); }
-                else if(tabindex%row_num === 0){ checkbox.setAttribute("id", "chkbox_sla_"+now_contest_name+"_"+"f"); }
+                else if(tabindex%row_num === 7){ checkbox.setAttribute("id", "chkbox_sla_"+now_contest_name+"_"+"f"); }
+                else if(tabindex%row_num === 0){ checkbox.setAttribute("id", "chkbox_sla_"+now_contest_name+"_"+"f2"); }
                 tds[i].insertBefore(checkbox, tds[i].firstChild);
                 continue;
             }
