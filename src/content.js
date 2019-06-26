@@ -15,6 +15,35 @@
     );
     */
 
+    function onFullfilledToCanMakeCheckBoxes(){
+        // make_checkboxes()が正常に成功した or リトライ回数を超えたら、しょうがないので諦めてそのまま次の処理へ。
+        // 各ABC, ARC, AGC等の問題にチェックボックスをつける
+        make_checkboxes();
+
+        // 保存データを取得して、状態を反映させる
+        load_storage();
+    }
+
+    function onRejectedToCanMakeCheckBoxes(try_count){
+        // make_checkboxes()に失敗したときの処理
+        setTimeout(function () {
+            asyncCanMakeCheckBoxes(try_count).then(onFullfilledToCanMakeCheckBoxes, onRejectedToCanMakeCheckBoxes);
+        }, 2000);
+    }
+
+    function asyncCanMakeCheckBoxes(try_count) {
+        /* ページのDOMが構築されるまで処理を待つ */
+        return new Promise(function (resolve, reject) {
+            const is_success = can_make_checkboxes();
+            if(is_success || try_count === 0){
+                resolve();
+                return;
+            }
+            reject(--try_count);
+            return;
+        });
+    }
+
     chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse){
         if(document.getElementById("sla_root") !== null){ return false; }
 
@@ -24,12 +53,8 @@
         const insert_html = make_base_html();
         target_div.insertBefore(insert_html, target_div.firstChild);
 
-        // ここのmake_checkboxes()が正常に成功したあと、その下のload_storage()を実行してほしいので、
-        // Promiseで書きなおそう。
-        make_checkboxes();
-
-        // 保存データを取得して、状態を反映させる
-        load_storage();
+        const TRY_COUNT = 10;
+        asyncCanMakeCheckBoxes(TRY_COUNT).then(onFullfilledToCanMakeCheckBoxes, onRejectedToCanMakeCheckBoxes);
     });
 
     function make_base_html(){
@@ -137,6 +162,44 @@
     }
 
 
+    function can_make_checkboxes(){
+        /* 各問題に、Solve Later Againテーブルに問題を追加するためのチェックボックス要素を作成するための準備ができているか？
+        DOMが構成されているかのチェックをする
+        */
+        const h2s = document.getElementsByTagName("h2");
+        let is_success = true;
+        for(let i = 0; i < h2s.length; i++){
+            if(h2s[i].innerText == "AtCoder Beginner Contest"){
+                is_success &= exist_doms(h2s[i]);
+            }
+            else if(h2s[i].innerText == "AtCoder Regular Contest"){
+                is_success &= exist_doms(h2s[i]);
+            }
+            else if(h2s[i].innerText == "AtCoder Grand Contest"){
+                is_success &= exist_doms(h2s[i]);
+            }
+        }
+        if(!is_success){ return false; }
+        return true;
+    }
+
+    function exist_doms(elem_h2){
+        /* ABC, ARC, AGCの各問題のDOMが構築されているかをチェックする
+        Args:
+            elem_h2: テーブルのh2要素
+            row_num(int): テーブルの列数
+        */
+       const root_div = elem_h2.parentNode;
+       const tbody = root_div.getElementsByTagName("tbody")[0];
+       const tds = tbody.getElementsByTagName("td");
+
+       if(tds.length === 1){
+           // DOMがまだ構成されていない場合
+           return false;
+       }
+       return true;
+    }
+
     function make_checkboxes(){
         /* 各問題に、Solve Later Againテーブルに問題を追加するためのチェックボックス要素を作成する */
         const h2s = document.getElementsByTagName("h2");
@@ -153,30 +216,16 @@
         }
     }
 
-
-    function append_checkboxes(elem_h2, row_num, try_count){
+    function append_checkboxes(elem_h2, row_num){
         /* ABC, ARC, AGCの各問題にチェックボックス要素を追加する
         Args:
             elem_h2: テーブルのh2要素
             row_num(int): テーブルの列数
         */
-        const WAIT_TIME = 500
-        const TRY_LIMIT = 20
-        if(try_count >= TRY_LIMIT){ return false; }
-
         const root_div = elem_h2.parentNode;
         const tbody = root_div.getElementsByTagName("tbody")[0];
         const tds = tbody.getElementsByTagName("td");
         let now_contest_name = "";
-
-        if(tds.length === 1){
-            // DOMが構成されていないときに実行されることがある場合、非同期処理で少し待って、再度実行させる
-            // Promiseで書きなおそう。
-            setTimeout(() => {
-                append_checkboxes(elem_h2, row_num, try_count+1);                
-            }, WAIT_TIME);
-            return false;
-        }
         
         for(let i=0; i<tds.length; i++){
             if(!tds[i].hasAttribute("tabindex")){
