@@ -28,7 +28,7 @@
         // make_checkboxes()に失敗したときの処理
         setTimeout(function () {
             asyncCanMakeCheckBoxes(try_count).then(onFullfilledToCanMakeCheckBoxes, onRejectedToCanMakeCheckBoxes);
-        }, 2000);
+        }, 1000);
     }
 
     function asyncCanMakeCheckBoxes(try_count) {
@@ -53,7 +53,7 @@
         const insert_html = make_base_html();
         target_div.insertBefore(insert_html, target_div.firstChild);
 
-        const TRY_COUNT = 10;
+        const TRY_COUNT = 60;
         asyncCanMakeCheckBoxes(TRY_COUNT).then(onFullfilledToCanMakeCheckBoxes, onRejectedToCanMakeCheckBoxes);
     });
 
