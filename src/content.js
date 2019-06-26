@@ -354,7 +354,7 @@
 
         if(e.target.checked){
             // Solve Later Againテーブルにこの問題を追加する
-            const a_tag = e.target.parentNode.getElementsByTagName("a")[0].a_elem.cloneNode(true);
+            const a_tag = e.target.parentNode.getElementsByTagName("a")[0].cloneNode(true);
             make_new_tr_sla(base_id, a_tag);
         }
         else{
@@ -495,6 +495,9 @@
                     div.innerText = solved_date;
                     parent_td.appendChild(div);
                 }
+
+                // 問題のチェックボックスにチェックを入れる
+                target_chkbox.checked = true;
             }
         });
     }
