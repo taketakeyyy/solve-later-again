@@ -496,6 +496,14 @@
                     parent_td.appendChild(div);
                 }
 
+                // tr要素のSolved列のチェックボックスの中で、クリック可能にするものを決定する
+                for(let i=1; i<=3; i++){
+                    const chkbox = document.getElementById("chkbox_solved"+String(i)+"_"+base_id);
+                    if(chkbox === null){ continue; }
+                    chkbox.disabled = false;
+                    break;
+                }
+
                 // 問題のチェックボックスにチェックを入れる
                 target_chkbox.checked = true;
             }
