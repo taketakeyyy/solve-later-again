@@ -14,14 +14,13 @@
         }    
     );
     */
-
     function onFullfilledToCanMakeCheckBoxes(){
         // make_checkboxes()が正常に成功した or リトライ回数を超えたら、しょうがないので諦めてそのまま次の処理へ。
         // 各ABC, ARC, AGC等の問題にチェックボックスをつける
         make_checkboxes();
 
         // 保存データを取得して、状態を反映させる
-        load_storage();
+        async_load_storage().then(hilight_problems);
     }
 
     function onRejectedToCanMakeCheckBoxes(try_count){
@@ -338,8 +337,8 @@
         tr.appendChild(td5);
 
         // Solve Later Againのtbodyに、tr要素を追加する
-        const sla_root = document.getElementById("sla_root");
-        const tbody = sla_root.getElementsByTagName("tbody")[0];
+        const root_div = document.getElementById("sla_root");
+        const tbody = root_div.getElementsByTagName("tbody")[0];
         tbody.appendChild(tr);
     }
 
@@ -476,38 +475,116 @@
     }
 
 
-    function load_storage(){
-        chrome.storage.sync.get(null, function(loaded_data){
-            for(let base_id in loaded_data){
-                // SLAテーブルにtr要素を作成する
-                const target_chkbox = document.getElementById("chkbox_"+base_id);
-                const a_tag = target_chkbox.parentNode.getElementsByTagName("a")[0].cloneNode(true);
-                make_new_tr_sla(base_id, a_tag);
-
-                // tr要素のSolved列が年月日の場合はそれに変更する
-                for(let i=1; i<=3; i++){
-                    const solved_date = loaded_data[base_id]["solved"+String(i)];
-                    if(solved_date === null){ continue; }
-                    const parent_td = document.getElementById("chkbox_solved"+String(i)+"_"+base_id).parentNode;
-                    parent_td.innerText = "";
-                    const div = document.createElement("div");
-                    div.setAttribute("id", "date_solved"+String(i)+"_"+base_id);
-                    div.innerText = solved_date;
-                    parent_td.appendChild(div);
+    function async_load_storage(){
+        return new Promise(function (resolve, reject) {
+            chrome.storage.sync.get(null, function(loaded_data){
+                for(let base_id in loaded_data){
+                    // SLAテーブルにtr要素を作成する
+                    const target_chkbox = document.getElementById("chkbox_"+base_id);
+                    const a_tag = target_chkbox.parentNode.getElementsByTagName("a")[0].cloneNode(true);
+                    make_new_tr_sla(base_id, a_tag);
+    
+                    // tr要素のSolved列が年月日の場合はそれに変更する
+                    for(let i=1; i<=3; i++){
+                        const solved_date = loaded_data[base_id]["solved"+String(i)];
+                        if(solved_date === null){ continue; }
+                        const parent_td = document.getElementById("chkbox_solved"+String(i)+"_"+base_id).parentNode;
+                        parent_td.innerText = "";
+                        const div = document.createElement("div");
+                        div.setAttribute("id", "date_solved"+String(i)+"_"+base_id);
+                        div.innerText = solved_date;
+                        parent_td.appendChild(div);
+                    }
+    
+                    // tr要素のSolved列のチェックボックスの中で、クリック可能にするものを決定する
+                    for(let i=1; i<=3; i++){
+                        const chkbox = document.getElementById("chkbox_solved"+String(i)+"_"+base_id);
+                        if(chkbox === null){ continue; }
+                        chkbox.disabled = false;
+                        break;
+                    }
+    
+                    // 問題のチェックボックスにチェックを入れる
+                    target_chkbox.checked = true;
                 }
-
-                // tr要素のSolved列のチェックボックスの中で、クリック可能にするものを決定する
-                for(let i=1; i<=3; i++){
-                    const chkbox = document.getElementById("chkbox_solved"+String(i)+"_"+base_id);
-                    if(chkbox === null){ continue; }
-                    chkbox.disabled = false;
-                    break;
-                }
-
-                // 問題のチェックボックスにチェックを入れる
-                target_chkbox.checked = true;
-            }
+                console.log(Object.keys(loaded_data).length);
+                resolve();
+                return;    
+            });
         });
     }
+
+    function hilight_problems(){
+        /* 7日経過したSLAテーブルの問題をハイライトする */
+        const SOLVED2_DAYS = 7;
+        const SOLVED3_DAYS = 30;
+        const today = new Date();
+        today.setFullYear(2020);  // テスト用
+        
+        // SLAテーブルの各問題を走査する
+        const root_div = document.getElementById("sla_root");
+        const tbody = root_div.getElementsByTagName("tbody")[0];
+        const trs = tbody.getElementsByTagName("tr");
+        console.log("hilight:" + String(trs.length));
+        for(let i=0; i<trs.length; i++){
+            // trのidは、"tr_sla_[contest_name]_[promlem]"
+            const base_id = trs[i].getAttribute("id").slice(3);
+            const tds = trs[i].getElementsByTagName("td");
+            // Solved 1をチェックする
+            const chkbox = document.getElementById("chkbox_solved1_"+base_id);
+            if(chkbox !== null && chkbox.disabled === false){
+                // Soved1をまだチェックしていないので、何もしない
+                continue;
+            }
+                
+            const hilight_if_needed = (solved_num, elapse_msec) => {
+                const chkbox = document.getElementById("chkbox_solved"+String(solved_num)+"_"+base_id);
+                if(chkbox !== null && chkbox.disabled === false){
+                    // このSovedをまだチェックしていないので、前のSolvedの日付と比較する
+                    const dt_str = document.getElementById("date_solved"+String(solved_num-1)+"_"+base_id).innerText;
+                    const dt = strdate2date(dt_str);
+                    if(today-dt >= elapse_msec){
+                        // 経過しているのでハイライト
+                        const target_tr = document.getElementById("tr_"+base_id);
+                        target_tr.style.backgroundColor = "#f5b88791";
+                        tds[solved_num].style.backgroundColor = "#f7964891";
+                        return true;
+                    }
+                    return false;
+                }
+            }
+            // Solved 2をチェックする
+            let result = hilight_if_needed(2, 60*60*24+SOLVED2_DAYS*1000);
+            if(result){ continue; }
+
+            // Solved 3をチェックする
+            result = hilight_if_needed(3, 60*60*24+SOLVED3_DAYS*1000);
+            if(result){ continue; }
+        }
+    }
+
+    function strdate2date(dt_str){
+        /* 文字列の日付をDate型に変換して返す 
+        (例) dt_str = "2019/6/27(Thu)"
+        */
+        dt_str = dt_str.split('(')[0];
+        const dts = dt_str.split('/');
+        let dt = new Date;
+        dt.setFullYear(Number(dts[0]));
+        dt.setMonth(Number(dts[1])-1);
+        dt.setDate(Number(dts[2]));
+        return dt;
+    }
+
+    function sleep(msec){ 
+        return new Promise(resolve => setTimeout(resolve, msec));
+    }
+    async function wait(){
+        // await句を使って、Promiseの非同期処理が完了するまで待機します。
+        await sleep(500);
+        hilight_problems();
+    }
+
+
 })();
 
