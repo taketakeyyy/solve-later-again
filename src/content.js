@@ -519,7 +519,7 @@
         const SOLVED2_DAYS = 7;
         const SOLVED3_DAYS = 30;
         const today = new Date();
-        today.setFullYear(2020);  // テスト用
+        //today.setFullYear(2020);  // テスト用
         
         // SLAテーブルの各問題を走査する
         const root_div = document.getElementById("sla_root");
