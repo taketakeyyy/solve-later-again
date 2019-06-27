@@ -2,19 +2,37 @@
     // スコープの汚染を防ぐため、即時関数で囲む
     'use strict';
 
-    // Content Scriptからchrome.runtime.sendMessage()を使ってメッセージを投げる
-    // 第一引数にはメッセージのキーと値を指定する
-    // 第二引数はうまくいったときのコールバック関数
-    /*
-    chrome.runtime.sendMessage(
-        {},
-        function(response){
-            console.log(response);
-            console.log("message sent!");
-        }    
-    );
-    */
-    function onFullfilledToCanMakeCheckBoxes(){
+    const SOLVED_MAX = 3;  // Solved3 まで
+
+    const CAN_MAKE_CHKBOX_WAIT_MSEC = 1000;  // ページのDOMが構成されるのを待つミリ秒
+    const CAN_MAKE_CHKBOX_RETRY_COUNT = 60;  // ページのDOMが構成されるのを待つリトライ回数
+
+    const ABC_COL_NUM = 7;  // ABCの列数
+    const ARC_COL_NUM = 5;  // ARCの列数
+    const AGC_COL_NUM = 8;  // AGCの列数
+
+    const ID_SLA_ROOT = "sla_root"  // Solve Later Again(SLA)テーブルのdivのid
+    const ID_TR_SLA_ = "tr_sla_"  // SLAテーブルのtr要素のidのprefix (tr_sla_abc131_a)
+    const ID_CHKBOX_SOLVED1_SLA_ = "chkbox_solved1_sla_"  // SLAテーブルのSolved1列のチェックボックスのIDのprefix (chkbox_solved1_sla_abc131_a)
+    const ID_CHKBOX_SOLVED2_SLA_ = "chkbox_solved2_sla_"  // SLAテーブルのSolved2列のチェックボックスのIDのprefix (chkbox_solved2_sla_abc131_a)
+    const ID_CHKBOX_SOLVED3_SLA_ = "chkbox_solved3_sla_"  // SLAテーブルのSolved3列のチェックボックスのIDのprefix (chkbox_solved3_sla_abc131_a)
+    const ID_DEL_BTN_SLA_ = "del_btn_sla_"  // SLAテーブルのDeleteボタンのIDのprefix (del_btn_sla_abc131_a)
+    const ID_DATE_SOLVED1_SLA_ = "date_solved1_sla_"  // SLAテーブルの問題を解いたときの年月日のdivのidのprefix (date_solved1_sla_abc131_a)
+    const ID_DATE_SOLVED2_SLA_ = "date_solved2_sla_"  // SLAテーブルの問題を解いたときの年月日のdivのidのprefix (date_solved2_sla_abc131_a)
+    const ID_DATE_SOLVED3_SLA_ = "date_solved3_sla_"  // SLAテーブルの問題を解いたときの年月日のdivのidのprefix (date_solved3_sla_abc131_a)
+
+    const ID_CHKBOX_SLA_ = "chkbox_sla_"  // 各問題のチェックボックスのIDのprefix (chkbox_sla_abc131_a)
+
+    const SOLVED2_DAYS = 7;   // Solved2 はX日後に解き直す
+    const SOLVED3_DAYS = 30;  // Solved3 はX日後に解き直す
+
+    const WDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+    const HILIGHT_CLR_TR = "#f5b88791";
+    const HILIGHT_CLR_TD = "#f7964891";
+
+
+    function on_fullfilled_can_make_checkboxes(){
         // make_checkboxes()が正常に成功した or リトライ回数を超えたら、しょうがないので諦めてそのまま次の処理へ。
         // 各ABC, ARC, AGC等の問題にチェックボックスをつける
         make_checkboxes();
@@ -23,14 +41,14 @@
         async_load_storage().then(hilight_problems);
     }
 
-    function onRejectedToCanMakeCheckBoxes(try_count){
+    function on_rejected_can_make_checkboxes(try_count){
         // make_checkboxes()に失敗したときの処理
         setTimeout(function () {
-            asyncCanMakeCheckBoxes(try_count).then(onFullfilledToCanMakeCheckBoxes, onRejectedToCanMakeCheckBoxes);
-        }, 1000);
+            async_can_make_checkboxes(try_count).then(on_fullfilled_can_make_checkboxes, on_rejected_can_make_checkboxes);
+        }, CAN_MAKE_CHKBOX_WAIT_MSEC);
     }
 
-    function asyncCanMakeCheckBoxes(try_count) {
+    function async_can_make_checkboxes(try_count) {
         /* ページのDOMが構築されるまで処理を待つ */
         return new Promise(function (resolve, reject) {
             const is_success = can_make_checkboxes();
@@ -44,7 +62,7 @@
     }
 
     chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse){
-        if(document.getElementById("sla_root") !== null){ return false; }
+        if(document.getElementById(ID_SLA_ROOT) !== null){ return false; }
 
         const root_div = document.getElementById('root');
 
@@ -52,14 +70,13 @@
         const insert_html = make_base_html();
         target_div.insertBefore(insert_html, target_div.firstChild);
 
-        const TRY_COUNT = 60;
-        asyncCanMakeCheckBoxes(TRY_COUNT).then(onFullfilledToCanMakeCheckBoxes, onRejectedToCanMakeCheckBoxes);
+        async_can_make_checkboxes(CAN_MAKE_CHKBOX_RETRY_COUNT).then(on_fullfilled_can_make_checkboxes, on_rejected_can_make_checkboxes);
     });
 
     function make_base_html(){
         /* Solve Later Again セクションの基本的なHTMLを作成する */
         const html = document.createElement("div");
-        html.setAttribute("id", "sla_root");
+        html.setAttribute("id", ID_SLA_ROOT);
         html.classList.add("row");
         
         const h2 = document.createElement("h2");
@@ -142,11 +159,11 @@
         tr_thead.appendChild(th_solved1);
 
         const th_solved2 = document.createElement("th");
-        th_solved2.textContent = "Solved 2 (7 Days Later)";
+        th_solved2.textContent = "Solved 2 ("+String(SOLVED2_DAYS)+" Days Later)";
         tr_thead.appendChild(th_solved2);
 
         const th_solved3 = document.createElement("th");
-        th_solved3.textContent = "Solved 3 (30 Days Later)";
+        th_solved3.textContent = "Solved 3 ("+String(SOLVED3_DAYS)+" Days Later)";
         tr_thead.appendChild(th_solved3);
 
         const th_delete = document.createElement("th");
@@ -186,7 +203,6 @@
         /* ABC, ARC, AGCの各問題のDOMが構築されているかをチェックする
         Args:
             elem_h2: テーブルのh2要素
-            row_num(int): テーブルの列数
         */
        const root_div = elem_h2.parentNode;
        const tbody = root_div.getElementsByTagName("tbody")[0];
@@ -204,22 +220,22 @@
         const h2s = document.getElementsByTagName("h2");
         for(let i = 0; i < h2s.length; i++){
             if(h2s[i].innerText == "AtCoder Beginner Contest"){
-                append_checkboxes(h2s[i], 7, 0);
+                append_checkboxes(h2s[i], ABC_COL_NUM);
             }
             else if(h2s[i].innerText == "AtCoder Regular Contest"){
-                append_checkboxes(h2s[i], 5, 0);
+                append_checkboxes(h2s[i], ARC_COL_NUM);
             }
             else if(h2s[i].innerText == "AtCoder Grand Contest"){
-                append_checkboxes(h2s[i], 8, 0);
+                append_checkboxes(h2s[i], AGC_COL_NUM);
             }
         }
     }
 
-    function append_checkboxes(elem_h2, row_num){
+    function append_checkboxes(elem_h2, col_num){
         /* ABC, ARC, AGCの各問題にチェックボックス要素を追加する
         Args:
             elem_h2: テーブルのh2要素
-            row_num(int): テーブルの列数
+            col_num(int): テーブルの列数
         */
         const root_div = elem_h2.parentNode;
         const tbody = root_div.getElementsByTagName("tbody")[0];
@@ -237,7 +253,7 @@
             }
 
             const tabindex = parseInt(tds[i].getAttribute("tabindex"));
-            if(tabindex%row_num === 1){
+            if(tabindex%col_num === 1){
                 // contest の列なので、チェックボックスは入れない
                 now_contest_name = tds[i].getElementsByTagName("a")[0].innerText.toLowerCase();
                 continue;
@@ -247,46 +263,46 @@
             checkbox.setAttribute("type", "checkbox");
             checkbox.checked = false;
             checkbox.addEventListener("click", click_chkbox_sla);
-            if(row_num === 7){
+            if(col_num === ABC_COL_NUM){
                 // ABCのとき
-                if(tabindex%row_num === 2){ checkbox.setAttribute("id", "chkbox_sla_"+now_contest_name+"_"+"a"); }
-                else if(tabindex%row_num === 3){ checkbox.setAttribute("id", "chkbox_sla_"+now_contest_name+"_"+"b"); }
-                else if(tabindex%row_num === 4){ checkbox.setAttribute("id", "chkbox_sla_"+now_contest_name+"_"+"c"); }
-                else if(tabindex%row_num === 5){ checkbox.setAttribute("id", "chkbox_sla_"+now_contest_name+"_"+"d"); }
-                else if(tabindex%row_num === 6){ checkbox.setAttribute("id", "chkbox_sla_"+now_contest_name+"_"+"e"); }
-                else if(tabindex%row_num === 0){ checkbox.setAttribute("id", "chkbox_sla_"+now_contest_name+"_"+"f"); }
+                if(tabindex%col_num === 2){ checkbox.setAttribute("id", ID_CHKBOX_SLA_+now_contest_name+"_"+"a"); }
+                else if(tabindex%col_num === 3){ checkbox.setAttribute("id", ID_CHKBOX_SLA_+now_contest_name+"_"+"b"); }
+                else if(tabindex%col_num === 4){ checkbox.setAttribute("id", ID_CHKBOX_SLA_+now_contest_name+"_"+"c"); }
+                else if(tabindex%col_num === 5){ checkbox.setAttribute("id", ID_CHKBOX_SLA_+now_contest_name+"_"+"d"); }
+                else if(tabindex%col_num === 6){ checkbox.setAttribute("id", ID_CHKBOX_SLA_+now_contest_name+"_"+"e"); }
+                else if(tabindex%col_num === 0){ checkbox.setAttribute("id", ID_CHKBOX_SLA_+now_contest_name+"_"+"f"); }
                 tds[i].insertBefore(checkbox, tds[i].firstChild);
                 continue;
             }
-            else if(row_num === 5){
+            else if(col_num === ARC_COL_NUM){
                 // ARCのとき
-                if(tabindex%row_num === 2){ checkbox.setAttribute("id", "chkbox_sla_"+now_contest_name+"_"+"a"); }
-                else if(tabindex%row_num === 3){ checkbox.setAttribute("id", "chkbox_sla_"+now_contest_name+"_"+"b"); }
-                else if(tabindex%row_num === 4){ checkbox.setAttribute("id", "chkbox_sla_"+now_contest_name+"_"+"c"); }
-                else if(tabindex%row_num === 0){ checkbox.setAttribute("id", "chkbox_sla_"+now_contest_name+"_"+"d"); }
+                if(tabindex%col_num === 2){ checkbox.setAttribute("id", ID_CHKBOX_SLA_+now_contest_name+"_"+"a"); }
+                else if(tabindex%col_num === 3){ checkbox.setAttribute("id", ID_CHKBOX_SLA_+now_contest_name+"_"+"b"); }
+                else if(tabindex%col_num === 4){ checkbox.setAttribute("id", ID_CHKBOX_SLA_+now_contest_name+"_"+"c"); }
+                else if(tabindex%col_num === 0){ checkbox.setAttribute("id", ID_CHKBOX_SLA_+now_contest_name+"_"+"d"); }
                 tds[i].insertBefore(checkbox, tds[i].firstChild);
                 continue;
             }
-            else if(row_num === 8){
+            else if(col_num === AGC_COL_NUM){
                 // AGCのとき
-                if(tabindex%row_num === 2){ checkbox.setAttribute("id", "chkbox_sla_"+now_contest_name+"_"+"a"); }
-                else if(tabindex%row_num === 3){ checkbox.setAttribute("id", "chkbox_sla_"+now_contest_name+"_"+"b"); }
-                else if(tabindex%row_num === 4){ checkbox.setAttribute("id", "chkbox_sla_"+now_contest_name+"_"+"c"); }
-                else if(tabindex%row_num === 5){ checkbox.setAttribute("id", "chkbox_sla_"+now_contest_name+"_"+"d"); }
-                else if(tabindex%row_num === 6){ checkbox.setAttribute("id", "chkbox_sla_"+now_contest_name+"_"+"e"); }
-                else if(tabindex%row_num === 7){ checkbox.setAttribute("id", "chkbox_sla_"+now_contest_name+"_"+"f"); }
-                else if(tabindex%row_num === 0){ checkbox.setAttribute("id", "chkbox_sla_"+now_contest_name+"_"+"f2"); }
+                if(tabindex%col_num === 2){ checkbox.setAttribute("id", ID_CHKBOX_SLA_+now_contest_name+"_"+"a"); }
+                else if(tabindex%col_num === 3){ checkbox.setAttribute("id", ID_CHKBOX_SLA_+now_contest_name+"_"+"b"); }
+                else if(tabindex%col_num === 4){ checkbox.setAttribute("id", ID_CHKBOX_SLA_+now_contest_name+"_"+"c"); }
+                else if(tabindex%col_num === 5){ checkbox.setAttribute("id", ID_CHKBOX_SLA_+now_contest_name+"_"+"d"); }
+                else if(tabindex%col_num === 6){ checkbox.setAttribute("id", ID_CHKBOX_SLA_+now_contest_name+"_"+"e"); }
+                else if(tabindex%col_num === 7){ checkbox.setAttribute("id", ID_CHKBOX_SLA_+now_contest_name+"_"+"f"); }
+                else if(tabindex%col_num === 0){ checkbox.setAttribute("id", ID_CHKBOX_SLA_+now_contest_name+"_"+"f2"); }
                 tds[i].insertBefore(checkbox, tds[i].firstChild);
                 continue;
             }
         }
     }
 
-    function make_new_tr_sla(base_id, a_tag){
+    function make_new_tr_sla(problem_name, a_tag){
         // SLAテーブルの新しいtr要素を作成する
         const tr = document.createElement("tr");
         // idを、"tr_sla_[contest_name]_[problem]" にする
-        tr.setAttribute("id", "tr_"+base_id);
+        tr.setAttribute("id", ID_TR_SLA_+problem_name);
 
         const td1 = document.createElement("td");
         td1.appendChild(a_tag);
@@ -294,7 +310,7 @@
         const td2 = document.createElement("td");
         const checkbox2 = document.createElement("input");
         checkbox2.setAttribute("type", "checkbox");
-        checkbox2.setAttribute("id", "chkbox_solved1_"+base_id);
+        checkbox2.setAttribute("id", ID_CHKBOX_SOLVED1_SLA_+problem_name);
         checkbox2.addEventListener("click", click_chkbox_solved_sla);
         checkbox2.checked = false;
         checkbox2.disabled = false;
@@ -303,7 +319,7 @@
         const td3 = document.createElement("td");
         const checkbox3 = document.createElement("input");
         checkbox3.setAttribute("type", "checkbox");
-        checkbox3.setAttribute("id", "chkbox_solved2_"+base_id);
+        checkbox3.setAttribute("id", ID_CHKBOX_SOLVED2_SLA_+problem_name);
         checkbox3.addEventListener("click", click_chkbox_solved_sla);
         checkbox3.checked = false;
         checkbox3.disabled = true;
@@ -312,7 +328,7 @@
         const td4 = document.createElement("td");
         const checkbox4 = document.createElement("input");
         checkbox4.setAttribute("type", "checkbox");
-        checkbox4.setAttribute("id", "chkbox_solved3_"+base_id);
+        checkbox4.setAttribute("id", ID_CHKBOX_SOLVED3_SLA_+problem_name);
         checkbox4.addEventListener("click", click_chkbox_solved_sla);
         checkbox4.checked = false;
         checkbox4.disabled = true;
@@ -323,7 +339,7 @@
         const button_del = document.createElement("input");
         button_del.setAttribute("type", "button");
         button_del.setAttribute("value", "Delete");
-        button_del.setAttribute("id", "del_btn_"+base_id);
+        button_del.setAttribute("id", ID_DEL_BTN_SLA_+problem_name);
         button_del.classList.add("btn");
         button_del.classList.add("btn-secondary");
         button_del.classList.add("btn-sla-delete");
@@ -337,7 +353,7 @@
         tr.appendChild(td5);
 
         // Solve Later Againのtbodyに、tr要素を追加する
-        const root_div = document.getElementById("sla_root");
+        const root_div = document.getElementById(ID_SLA_ROOT);
         const tbody = root_div.getElementsByTagName("tbody")[0];
         tbody.appendChild(tr);
     }
@@ -348,47 +364,45 @@
             e(event): クリックされたチェックボックスのイベント
         */
 
-        // checkboxのidは、"chkbox_sla_[contest_name]_[promlem]"
-        const base_id = e.target.getAttribute("id").slice(7);
+        const problem_name = e.target.getAttribute("id").slice(ID_CHKBOX_SLA_.length);
 
         if(e.target.checked){
-            // Solve Later Againテーブルにこの問題を追加する
+            // SLAテーブルにこの問題を追加する
             const a_tag = e.target.parentNode.getElementsByTagName("a")[0].cloneNode(true);
-            make_new_tr_sla(base_id, a_tag);
+            make_new_tr_sla(problem_name, a_tag);
         }
         else{
-            // Solve Later Againテーブルからこの問題を削除する
-            const elem_del = document.getElementById("tr_"+base_id);
+            // SLAテーブルからこの問題を削除する
+            const elem_del = document.getElementById(ID_TR_SLA_+problem_name);
             elem_del.parentNode.removeChild(elem_del);
         }
 
         // 現在のテーブル状態を保存する
-        save_solve_later_again(base_id);
+        save_solve_later_again(problem_name);
     }
 
     function click_del_btn_sla(e){
         /* Deleteボタンをクリックしたときの処理 
 
-        * Solve Later Againのテーブルからこの問題を削除する
+        * SLAのテーブルからこの問題を削除する
         * この問題のチェックボックスのチェックを外す
 
         Args:
             e(event): クリックされたボタンのイベント
         */
     
-        // Deleteボタンのidは、"del_btn_sla_project_problem"
-        const base_id = e.target.getAttribute("id").slice(8);
+        const problem_name = e.target.getAttribute("id").slice(ID_DEL_BTN_SLA_.length);
 
-        // Solve Later Againのテーブルからこの問題を削除する
-        const del_tr = document.getElementById("tr_"+base_id);
+        // SLAのテーブルからこの問題を削除する
+        const del_tr = document.getElementById(ID_TR_SLA_+problem_name);
         del_tr.parentNode.removeChild(del_tr);
 
         // この問題のチェックボックスのチェックを外す
-        const chkbox = document.getElementById("chkbox_"+base_id);
+        const chkbox = document.getElementById(ID_CHKBOX_SLA_+problem_name);
         chkbox.checked = false;
 
         // 現在のテーブル状態を保存する
-        save_solve_later_again(base_id);
+        save_solve_later_again(problem_name);
     }
 
 
@@ -404,7 +418,7 @@
         */
 
         // このチェックボックスのidは、"chkbox_solved*_sla_project_problem"
-        const base_id = e.target.getAttribute("id").slice(15);
+        const problem_name = e.target.getAttribute("id").slice(ID_CHKBOX_SOLVED1_SLA_.length);
         const solved_num = parseInt(e.target.getAttribute("id")[13], 10);
 
         const func = (solved_num) => {
@@ -413,16 +427,15 @@
             const month = now.getMonth();
             const day = now.getDate();
             const wday = now.getDay();
-            const wdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
             const td = e.target.parentNode;
             td.innerText = "";
             const div = document.createElement("div");
-            div.setAttribute("id", "date_solved" + String(solved_num) + "_" + base_id);
-            div.innerText = year + "/" + (month+1) + "/" + day + "(" + wdays[wday] + ")";
+            div.setAttribute("id", "date_solved"+String(solved_num)+"_sla_"+problem_name);
+            div.innerText = year + "/" + (month+1) + "/" + day + "(" + WDAYS[wday] + ")";
             td.appendChild(div);
 
-            if(solved_num < 3){
-                const chkbox_solved_next = document.getElementById("chkbox_solved"+(solved_num+1)+"_"+base_id);
+            if(solved_num < SOLVED_MAX){
+                const chkbox_solved_next = document.getElementById("chkbox_solved"+(solved_num+1)+"_sla_"+problem_name);
                 chkbox_solved_next.disabled = false;
             }
         }
@@ -430,45 +443,47 @@
         func(solved_num);
 
         // 現在のテーブル状態を保存する
-        save_solve_later_again(base_id);
+        save_solve_later_again(problem_name);
     }
 
     
-    function save_solve_later_again(base_id){
+    function save_solve_later_again(problem_name){
         /*
-        Solved Later Again(SLA)テーブルの状態を保存する
+        SLAテーブルの状態を保存する
 
         Args:
-            base_id(str): 保存したい要素のbase_id
+            problem_name(str): コンテスト名 (abc131_a)
 
         Notes:
             保存形式は、以下のような感じ。
               - チェックボックスのとき、null
               - 日付が入ってる場合、それをstr型で保存
             例
-            {base_id: {"solved1": "2019/4/21(Sun)"}, {"solved2": null}, {"solved3": null}}
+            {sla_abc131_a: {"solved1": "2019/4/21(Sun)"}, {"solved2": null}, {"solved3": null}}
 
         Refs:
             https://dackdive.hateblo.jp/entry/2017/07/27/100000
             https://github.com/taketakeyyy/my-practice/blob/master/dotinstall/MyExtensions/04_OptionsUI/options.js
         */
-        if(document.getElementById("tr_"+base_id) === null){
+        const sla_id = "sla_" + problem_name;
+
+        if(document.getElementById(ID_TR_SLA_+problem_name) === null){
             // SLAテーブルに要素が存在しないなら、データを削除する
-            chrome.storage.sync.remove(base_id);
+            chrome.storage.sync.remove(sla_id);
             return true;
         }
 
         // SLAテーブルに要素が存在するなら、現在の状態を保存する
         let saving_data = {};
-        saving_data[base_id] = {};
-        for(let i=1; i<=3; i++){
-            const chkbox = document.getElementById("chkbox_solved"+String(i)+"_"+base_id);
+        saving_data[sla_id] = {};
+        for(let i=1; i<=SOLVED_MAX; i++){
+            const chkbox = document.getElementById("chkbox_solved"+String(i)+"_"+sla_id);
             if(chkbox === null){
-                const div = document.getElementById("date_solved"+String(i)+"_"+base_id);
-                saving_data[base_id]["solved"+String(i)] = div.innerText;
+                const div = document.getElementById("date_solved"+String(i)+"_"+sla_id);
+                saving_data[sla_id]["solved"+String(i)] = div.innerText;
                 continue;
             }
-            saving_data[base_id]["solved"+String(i)] = null;
+            saving_data[sla_id]["solved"+String(i)] = null;
         }
 
         chrome.storage.sync.set(saving_data);
@@ -478,27 +493,27 @@
     function async_load_storage(){
         return new Promise(function (resolve, reject) {
             chrome.storage.sync.get(null, function(loaded_data){
-                for(let base_id in loaded_data){
+                for(let sla_id in loaded_data){
                     // SLAテーブルにtr要素を作成する
-                    const target_chkbox = document.getElementById("chkbox_"+base_id);
+                    const target_chkbox = document.getElementById("chkbox_"+sla_id);
                     const a_tag = target_chkbox.parentNode.getElementsByTagName("a")[0].cloneNode(true);
-                    make_new_tr_sla(base_id, a_tag);
+                    make_new_tr_sla(sla_id.slice(4), a_tag);
     
                     // tr要素のSolved列が年月日の場合はそれに変更する
-                    for(let i=1; i<=3; i++){
-                        const solved_date = loaded_data[base_id]["solved"+String(i)];
+                    for(let i=1; i<=SOLVED_MAX; i++){
+                        const solved_date = loaded_data[sla_id]["solved"+String(i)];
                         if(solved_date === null){ continue; }
-                        const parent_td = document.getElementById("chkbox_solved"+String(i)+"_"+base_id).parentNode;
+                        const parent_td = document.getElementById("chkbox_solved"+String(i)+"_"+sla_id).parentNode;
                         parent_td.innerText = "";
                         const div = document.createElement("div");
-                        div.setAttribute("id", "date_solved"+String(i)+"_"+base_id);
+                        div.setAttribute("id", "date_solved"+String(i)+"_"+sla_id);
                         div.innerText = solved_date;
                         parent_td.appendChild(div);
                     }
     
                     // tr要素のSolved列のチェックボックスの中で、クリック可能にするものを決定する
-                    for(let i=1; i<=3; i++){
-                        const chkbox = document.getElementById("chkbox_solved"+String(i)+"_"+base_id);
+                    for(let i=1; i<=SOLVED_MAX; i++){
+                        const chkbox = document.getElementById("chkbox_solved"+String(i)+"_"+sla_id);
                         if(chkbox === null){ continue; }
                         chkbox.disabled = false;
                         break;
@@ -507,58 +522,57 @@
                     // 問題のチェックボックスにチェックを入れる
                     target_chkbox.checked = true;
                 }
-                console.log(Object.keys(loaded_data).length);
                 resolve();
                 return;    
             });
         });
     }
 
+
     function hilight_problems(){
         /* 7日経過したSLAテーブルの問題をハイライトする */
-        const SOLVED2_DAYS = 7;
-        const SOLVED3_DAYS = 30;
         const today = new Date();
-        //today.setFullYear(2020);  // テスト用
+        today.setFullYear(2020);  // テスト用
         
         // SLAテーブルの各問題を走査する
-        const root_div = document.getElementById("sla_root");
+        const root_div = document.getElementById(ID_SLA_ROOT);
         const tbody = root_div.getElementsByTagName("tbody")[0];
         const trs = tbody.getElementsByTagName("tr");
-        console.log("hilight:" + String(trs.length));
         for(let i=0; i<trs.length; i++){
             // trのidは、"tr_sla_[contest_name]_[promlem]"
-            const base_id = trs[i].getAttribute("id").slice(3);
+            const problem_name = trs[i].getAttribute("id").slice(ID_TR_SLA_.length);
             const tds = trs[i].getElementsByTagName("td");
             // Solved 1をチェックする
-            const chkbox = document.getElementById("chkbox_solved1_"+base_id);
+            const chkbox = document.getElementById(ID_CHKBOX_SOLVED1_SLA_+problem_name);
             if(chkbox !== null && chkbox.disabled === false){
                 // Soved1をまだチェックしていないので、何もしない
                 continue;
             }
-                
+
             const hilight_if_needed = (solved_num, elapse_msec) => {
-                const chkbox = document.getElementById("chkbox_solved"+String(solved_num)+"_"+base_id);
+                /* SLAテーブルの問題を、日数が経過していればハイライトする */
+                const chkbox = document.getElementById("chkbox_solved"+String(solved_num)+"_sla_"+problem_name);
                 if(chkbox !== null && chkbox.disabled === false){
                     // このSovedをまだチェックしていないので、前のSolvedの日付と比較する
-                    const dt_str = document.getElementById("date_solved"+String(solved_num-1)+"_"+base_id).innerText;
+                    const dt_str = document.getElementById("date_solved"+String(solved_num-1)+"_sla_"+problem_name).innerText;
                     const dt = strdate2date(dt_str);
                     if(today-dt >= elapse_msec){
                         // 経過しているのでハイライト
-                        const target_tr = document.getElementById("tr_"+base_id);
-                        target_tr.style.backgroundColor = "#f5b88791";
-                        tds[solved_num].style.backgroundColor = "#f7964891";
-                        return true;
+                        const target_tr = document.getElementById(ID_TR_SLA_+problem_name);
+                        target_tr.style.backgroundColor = HILIGHT_CLR_TR;
+                        tds[solved_num].style.backgroundColor = HILIGHT_CLR_TD;
+                            return true;
                     }
                     return false;
                 }
             }
+                
             // Solved 2をチェックする
-            let result = hilight_if_needed(2, 60*60*24+SOLVED2_DAYS*1000);
+            let result = hilight_if_needed(2, 60*60*24*SOLVED2_DAYS*1000);
             if(result){ continue; }
 
             // Solved 3をチェックする
-            result = hilight_if_needed(3, 60*60*24+SOLVED3_DAYS*1000);
+            result = hilight_if_needed(3, 60*60*24*SOLVED3_DAYS*1000);
             if(result){ continue; }
         }
     }
@@ -575,16 +589,6 @@
         dt.setDate(Number(dts[2]));
         return dt;
     }
-
-    function sleep(msec){ 
-        return new Promise(resolve => setTimeout(resolve, msec));
-    }
-    async function wait(){
-        // await句を使って、Promiseの非同期処理が完了するまで待機します。
-        await sleep(500);
-        hilight_problems();
-    }
-
 
 })();
 
