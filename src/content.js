@@ -301,7 +301,6 @@
     function make_new_tr_sla(problem_name, a_tag){
         // SLAテーブルの新しいtr要素を作成する
         const tr = document.createElement("tr");
-        // idを、"tr_sla_[contest_name]_[problem]" にする
         tr.setAttribute("id", ID_TR_SLA_+problem_name);
 
         const td1 = document.createElement("td");
@@ -419,7 +418,7 @@
 
         // このチェックボックスのidは、"chkbox_solved*_sla_project_problem"
         const problem_name = e.target.getAttribute("id").slice(ID_CHKBOX_SOLVED1_SLA_.length);
-        const solved_num = parseInt(e.target.getAttribute("id")[13], 10);
+        const solved_num = parseInt(e.target.getAttribute("id")["chkbox_solved".length], 10);
 
         const func = (solved_num) => {
             const now = new Date();
@@ -539,7 +538,6 @@
         const tbody = root_div.getElementsByTagName("tbody")[0];
         const trs = tbody.getElementsByTagName("tr");
         for(let i=0; i<trs.length; i++){
-            // trのidは、"tr_sla_[contest_name]_[promlem]"
             const problem_name = trs[i].getAttribute("id").slice(ID_TR_SLA_.length);
             const tds = trs[i].getElementsByTagName("td");
             // Solved 1をチェックする
