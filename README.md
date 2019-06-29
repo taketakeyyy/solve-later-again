@@ -1,2 +1,2 @@
 # solve-later-again
-Chrome extensions which make a "Solve Later Again" section for AtCoder Problems.
+Chrome extension which generates a "Solve Later Again" section on AtCoder Problems.
