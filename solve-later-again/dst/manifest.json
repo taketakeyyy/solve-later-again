@@ -1,0 +1,31 @@
+{
+    "manifest_version": 2,
+    "name": "Solve Later Again",
+    "version": "1.0.0",
+    // ここまで必須
+    "author": "taketakeyyy",
+    "description": "Append a 'Solve Later Again' table on AtCoder Problems",
+
+    "browser_action": {
+        "default_icon": {
+            "16": "icon.png"  // 16x16のアイコン
+        }
+    },
+
+    "content_scripts": [
+        {
+            //"matches": ["https://kenkoooo.com/atcoder/#/table/*", "https://kenkoooo.com/atcoder/?user=*#/table/*/"],
+            "matches": ["https://kenkoooo.com/atcoder/*"],
+            "js": ["content.js"],
+            "css": ["content.css"]
+        }
+    ],
+
+    "background": {
+        "scripts": ["background.js"],
+        "persistent": false
+    },
+
+    "permissions": ["tabs", "storage"]
+    
+}
