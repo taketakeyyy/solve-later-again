@@ -1,0 +1,7 @@
+# Ignore folowing files
+solve-later-again/node_modules
+solve-later-again/node_modules/**
+
+*.js.map
+
+# Don't ignore following files
