@@ -20,7 +20,10 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
 
     chrome.tabs.getSelected(null, function(tab){
         // Tableページのみ処理する
-        const pattern = /^https?:\/\/kenkoooo\.com\/atcoder\/\?user=.*#\/table\/.*/g;
+        // https://kenkoooo.com/atcoder#/table/username
+        // https://kenkoooo.com/atcoder/#/table/username
+        // https://kenkoooo.com/atcoder/?user=username#/table/username/
+        const pattern = /^https?:\/\/kenkoooo\.com\/atcoder.*#\/table\/.*/g;
         const result = tab.url.match(pattern);
         if(result === null){
             // Tableページでないならば

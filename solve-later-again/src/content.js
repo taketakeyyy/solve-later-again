@@ -1,7 +1,6 @@
 (function(){
     // スコープの汚染を防ぐため、即時関数で囲む
     'use strict';
-
     const dom_ope = require("./dom_operations.js");
     const consts = require("./consts.js");
 
