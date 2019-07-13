@@ -268,7 +268,7 @@ function strdate2date(dt_str){
 
 //[START function]
 export function hilight_problems(){
-    /* 7日経過したSLAテーブルの問題をハイライトする */
+    /* 規定の日数を経過したSLAテーブルの問題をハイライトする */
     const today = new Date();
     today.setHours(23);
     today.setMinutes(59);
@@ -315,5 +315,16 @@ export function hilight_problems(){
         result = hilight_if_needed(3, 60*60*24*consts.SOLVED3_DAYS*1000);
         if(result){ continue; }
     }
+}
+//[END function]
+
+//[START function]
+export function unhilight_problems(problem_name, solved_num){
+    /* SLAテーブルの指定の問題のハイライトを解除する */
+    const target_tr = document.getElementById(consts.ID_TR_SLA_+problem_name);
+    target_tr.style.backgroundColor = "";
+
+    const tds = target_tr.getElementsByTagName("td");
+    tds[solved_num].style.backgroundColor = "";
 }
 //[END function]

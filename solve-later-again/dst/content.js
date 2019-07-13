@@ -223,7 +223,8 @@ function click_chkbox_solved_sla(e) {
     }
   };
 
-  func(solved_num); // 現在のテーブル状態を保存する
+  func(solved_num);
+  Object(_dom_operations_js__WEBPACK_IMPORTED_MODULE_0__["unhilight_problems"])(problem_name, solved_num); // 現在のテーブル状態を保存する
 
   save_solve_later_again(problem_name);
 } // [END function]
@@ -290,9 +291,9 @@ var ID_DATE_SOLVED3_SLA_ = "date_solved3_sla_"; // SLAテーブルの問題を�
 
 var ID_CHKBOX_SLA_ = "chkbox_sla_"; // 各問題のチェックボックスのIDのprefix (chkbox_sla_abc131_a)
 
-var SOLVED2_DAYS = 7; // Solved2 はX日後に解き直す
+var SOLVED2_DAYS = 0; // Solved2 はX日後に解き直す
 
-var SOLVED3_DAYS = 30; // Solved3 はX日後に解き直す
+var SOLVED3_DAYS = 3; // Solved3 はX日後に解き直す
 
 var WDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 var HILIGHT_CLR_TR = "#f5b88791";
@@ -469,7 +470,7 @@ var CAN_MAKE_CHKBOX_RETRY_COUNT = 60; // ページのDOMが構成されるのを
 /*!*******************************!*\
   !*** ./src/dom_operations.js ***!
   \*******************************/
-/*! exports provided: make_checkboxes, make_base_html, make_new_tr_sla, hilight_problems */
+/*! exports provided: make_checkboxes, make_base_html, make_new_tr_sla, hilight_problems, unhilight_problems */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -478,6 +479,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "make_base_html", function() { return make_base_html; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "make_new_tr_sla", function() { return make_new_tr_sla; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "hilight_problems", function() { return hilight_problems; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "unhilight_problems", function() { return unhilight_problems; });
 /* harmony import */ var _click_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./click.js */ "./src/click.js");
 
 
@@ -740,7 +742,7 @@ function strdate2date(dt_str) {
 
 
 function hilight_problems() {
-  /* 7日経過したSLAテーブルの問題をハイライトする */
+  /* 規定の日数を経過したSLAテーブルの問題をハイライトする */
   var today = new Date();
   today.setHours(23);
   today.setMinutes(59);
@@ -802,6 +804,15 @@ function hilight_problems() {
 
     if (_ret === "continue") continue;
   }
+} //[END function]
+//[START function]
+
+function unhilight_problems(problem_name, solved_num) {
+  /* SLAテーブルの指定の問題のハイライトを解除する */
+  var target_tr = document.getElementById(consts.ID_TR_SLA_ + problem_name);
+  target_tr.style.backgroundColor = "";
+  var tds = target_tr.getElementsByTagName("td");
+  tds[solved_num].style.backgroundColor = "";
 } //[END function]
 
 /***/ })

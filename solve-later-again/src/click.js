@@ -1,6 +1,6 @@
 'use strict';
 
-import { make_new_tr_sla } from "./dom_operations.js";
+import { make_new_tr_sla, unhilight_problems } from "./dom_operations.js";
 const consts = require("./consts.js");
 
 // [START function]
@@ -134,6 +134,8 @@ export function click_chkbox_solved_sla(e){
     }
 
     func(solved_num);
+
+    unhilight_problems(problem_name, solved_num);
 
     // 現在のテーブル状態を保存する
     save_solve_later_again(problem_name);
