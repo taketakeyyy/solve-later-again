@@ -1,6 +1,11 @@
 'use strict';
 
-import { click_chkbox_sla, click_chkbox_solved_sla, click_del_btn_sla } from "./click.js";
+import { 
+    click_chkbox_sla,
+    click_chkbox_solved_sla,
+    click_del_btn_sla,
+    click_again_btn_sla,
+} from "./click.js";
 const consts = require("./consts.js");
 
 function _append_checkboxes(elem_h2, col_num){
@@ -179,9 +184,10 @@ export function make_base_html(){
     th_solved3.textContent = "Solved 3 ("+String(consts.SOLVED3_DAYS)+" Days Later)";
     tr_thead.appendChild(th_solved3);
 
-    const th_delete = document.createElement("th");
-    th_delete.textContent = "Delete";
-    tr_thead.appendChild(th_delete);
+    const th_buttons = document.createElement("th");
+    th_buttons.textContent = "Buttons";
+    th_buttons.colSpan = "2";
+    tr_thead.appendChild(th_buttons);
 
     const tbody = document.createElement("tbody");
     table_container_body.appendChild(tbody);
@@ -199,55 +205,86 @@ export function make_new_tr_sla(problem_name, a_tag){
     const td1 = document.createElement("td");
     td1.appendChild(a_tag);
 
+    // Solved1, 2, 3の td要素。あとで初期化する
     const td2 = document.createElement("td");
-    const checkbox2 = document.createElement("input");
-    checkbox2.setAttribute("type", "checkbox");
-    checkbox2.setAttribute("id", consts.ID_CHKBOX_SOLVED1_SLA_+problem_name);
-    checkbox2.addEventListener("click", click_chkbox_solved_sla);
-    checkbox2.checked = false;
-    checkbox2.disabled = false;
-    td2.appendChild(checkbox2);
-
     const td3 = document.createElement("td");
-    const checkbox3 = document.createElement("input");
-    checkbox3.setAttribute("type", "checkbox");
-    checkbox3.setAttribute("id", consts.ID_CHKBOX_SOLVED2_SLA_+problem_name);
-    checkbox3.addEventListener("click", click_chkbox_solved_sla);
-    checkbox3.checked = false;
-    checkbox3.disabled = true;
-    td3.appendChild(checkbox3);
-
     const td4 = document.createElement("td");
-    const checkbox4 = document.createElement("input");
-    checkbox4.setAttribute("type", "checkbox");
-    checkbox4.setAttribute("id", consts.ID_CHKBOX_SOLVED3_SLA_+problem_name);
-    checkbox4.addEventListener("click", click_chkbox_solved_sla);
-    checkbox4.checked = false;
-    checkbox4.disabled = true;
-    td4.appendChild(checkbox4);
 
     const td5 = document.createElement("td");
-    td5.classList.add("td-sla-delete");
-    const button_del = document.createElement("input");
-    button_del.setAttribute("type", "button");
-    button_del.setAttribute("value", "Delete");
-    button_del.setAttribute("id", consts.ID_DEL_BTN_SLA_+problem_name);
-    button_del.classList.add("btn");
-    button_del.classList.add("btn-secondary");
-    button_del.classList.add("btn-sla-delete");
-    button_del.addEventListener("click", click_del_btn_sla);
-    td5.appendChild(button_del);
+    td5.classList.add("td-sla-again");
+    const btn_again = document.createElement("input");
+    btn_again.setAttribute("type", "button");
+    btn_again.setAttribute("value", "ReAgain");
+    btn_again.setAttribute("id", consts.ID_AGAIN_BTN_SLA_+problem_name);
+    btn_again.classList.add("btn");
+    //btn_again.classList.add("btn-secondary");
+    btn_again.classList.add("btn-sla-again");
+    btn_again.addEventListener("click", click_again_btn_sla);
+    td5.appendChild(btn_again);
+
+    const td6 = document.createElement("td");
+    td6.classList.add("td-sla-delete");
+    const btn_del = document.createElement("input");
+    btn_del.setAttribute("type", "button");
+    btn_del.setAttribute("value", "Delete");
+    btn_del.setAttribute("id", consts.ID_DEL_BTN_SLA_+problem_name);
+    btn_del.classList.add("btn");
+    btn_del.classList.add("btn-secondary");
+    btn_del.classList.add("btn-sla-delete");
+    btn_del.addEventListener("click", click_del_btn_sla);
+    td6.appendChild(btn_del);
 
     tr.appendChild(td1);
     tr.appendChild(td2);
     tr.appendChild(td3);
     tr.appendChild(td4);
     tr.appendChild(td5);
+    tr.appendChild(td6);
 
     // Solve Later Againのtbodyに、tr要素を追加する
     const root_div = document.getElementById(consts.ID_SLA_ROOT);
     const tbody = root_div.getElementsByTagName("tbody")[0];
     tbody.appendChild(tr);
+
+    initialize_problem_status(problem_name);
+}
+//[END function]
+
+//[START function]
+export function initialize_problem_status(problem_name){
+    /* SLAテーブルの指定の問題の状態を初期化する */
+    const target_tr = document.getElementById(consts.ID_TR_SLA_+problem_name);
+    const tds = target_tr.getElementsByTagName("td");
+
+    // solved1
+    tds[1].textContent = null;  // 子要素を全て削除
+    const chkbox1 = document.createElement("input");
+    chkbox1.setAttribute("type", "checkbox");
+    chkbox1.setAttribute("id", consts.ID_CHKBOX_SOLVED1_SLA_+problem_name);
+    chkbox1.addEventListener("click", click_chkbox_solved_sla);
+    tds[1].appendChild(chkbox1);
+    chkbox1.checked = false;
+    chkbox1.disabled = false;
+
+    // solved2
+    tds[2].textContent = null;
+    const chkbox2 = document.createElement("input");
+    chkbox2.setAttribute("type", "checkbox");
+    chkbox2.setAttribute("id", consts.ID_CHKBOX_SOLVED2_SLA_+problem_name);
+    chkbox2.addEventListener("click", click_chkbox_solved_sla);
+    tds[2].appendChild(chkbox2);
+    chkbox2.checked = false;
+    chkbox2.disabled = true;
+
+    // solved3
+    tds[3].textContent = null;
+    const chkbox3 = document.createElement("input");
+    chkbox3.setAttribute("type", "checkbox");
+    chkbox3.setAttribute("id", consts.ID_CHKBOX_SOLVED3_SLA_+problem_name);
+    chkbox3.addEventListener("click", click_chkbox_solved_sla);
+    tds[3].appendChild(chkbox3);
+    chkbox3.checked = false;
+    chkbox3.disabled = true;
 }
 //[END function]
 
@@ -319,7 +356,7 @@ export function hilight_problems(){
 //[END function]
 
 //[START function]
-export function unhilight_problems(problem_name, solved_num){
+export function unhilight_problem(problem_name, solved_num){
     /* SLAテーブルの指定の問題のハイライトを解除する */
     const target_tr = document.getElementById(consts.ID_TR_SLA_+problem_name);
     target_tr.style.backgroundColor = "";

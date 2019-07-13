@@ -90,11 +90,12 @@
 /*!**********************!*\
   !*** ./src/click.js ***!
   \**********************/
-/*! exports provided: click_del_btn_sla, click_chkbox_sla, click_chkbox_solved_sla */
+/*! exports provided: click_again_btn_sla, click_del_btn_sla, click_chkbox_sla, click_chkbox_solved_sla */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "click_again_btn_sla", function() { return click_again_btn_sla; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "click_del_btn_sla", function() { return click_del_btn_sla; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "click_chkbox_sla", function() { return click_chkbox_sla; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "click_chkbox_solved_sla", function() { return click_chkbox_solved_sla; });
@@ -105,6 +106,23 @@ __webpack_require__.r(__webpack_exports__);
 
 var consts = __webpack_require__(/*! ./consts.js */ "./src/consts.js"); // [START function]
 
+
+function click_again_btn_sla(e) {
+  /* Againボタンをクリックしたときの処理 
+    * SLAのテーブルのこの問題を初期状態に戻す
+    Args:
+      e(event): クリックされたボタンのイベント
+  */
+  var problem_name = e.target.getAttribute("id").slice(consts.ID_AGAIN_BTN_SLA_.length);
+  Object(_dom_operations_js__WEBPACK_IMPORTED_MODULE_0__["initialize_problem_status"])(problem_name);
+
+  for (var i = 1; i < consts.SOLVED_MAX + 1; i++) {
+    Object(_dom_operations_js__WEBPACK_IMPORTED_MODULE_0__["unhilight_problem"])(problem_name, i);
+  }
+
+  save_solve_later_again(problem_name);
+} // [END function]
+// [START function]
 
 function click_del_btn_sla(e) {
   /* Deleteボタンをクリックしたときの処理 
@@ -224,7 +242,7 @@ function click_chkbox_solved_sla(e) {
   };
 
   func(solved_num);
-  Object(_dom_operations_js__WEBPACK_IMPORTED_MODULE_0__["unhilight_problems"])(problem_name, solved_num); // 現在のテーブル状態を保存する
+  Object(_dom_operations_js__WEBPACK_IMPORTED_MODULE_0__["unhilight_problem"])(problem_name, solved_num); // 現在のテーブル状態を保存する
 
   save_solve_later_again(problem_name);
 } // [END function]
@@ -235,7 +253,7 @@ function click_chkbox_solved_sla(e) {
 /*!***********************!*\
   !*** ./src/consts.js ***!
   \***********************/
-/*! exports provided: SOLVED_MAX, ABC_COL_NUM, ARC_COL_NUM, AGC_COL_NUM, ID_SLA_ROOT, ID_TR_SLA_, ID_CHKBOX_SOLVED1_SLA_, ID_CHKBOX_SOLVED2_SLA_, ID_CHKBOX_SOLVED3_SLA_, ID_DEL_BTN_SLA_, ID_DATE_SOLVED1_SLA_, ID_DATE_SOLVED2_SLA_, ID_DATE_SOLVED3_SLA_, ID_CHKBOX_SLA_, SOLVED2_DAYS, SOLVED3_DAYS, WDAYS, HILIGHT_CLR_TR, HILIGHT_CLR_TD, CAN_MAKE_CHKBOX_WAIT_MSEC, CAN_MAKE_CHKBOX_RETRY_COUNT */
+/*! exports provided: SOLVED_MAX, ABC_COL_NUM, ARC_COL_NUM, AGC_COL_NUM, ID_SLA_ROOT, ID_TR_SLA_, ID_CHKBOX_SOLVED1_SLA_, ID_CHKBOX_SOLVED2_SLA_, ID_CHKBOX_SOLVED3_SLA_, ID_DEL_BTN_SLA_, ID_AGAIN_BTN_SLA_, ID_DATE_SOLVED1_SLA_, ID_DATE_SOLVED2_SLA_, ID_DATE_SOLVED3_SLA_, ID_CHKBOX_SLA_, SOLVED2_DAYS, SOLVED3_DAYS, WDAYS, HILIGHT_CLR_TR, HILIGHT_CLR_TD, CAN_MAKE_CHKBOX_WAIT_MSEC, CAN_MAKE_CHKBOX_RETRY_COUNT */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -250,6 +268,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ID_CHKBOX_SOLVED2_SLA_", function() { return ID_CHKBOX_SOLVED2_SLA_; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ID_CHKBOX_SOLVED3_SLA_", function() { return ID_CHKBOX_SOLVED3_SLA_; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ID_DEL_BTN_SLA_", function() { return ID_DEL_BTN_SLA_; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ID_AGAIN_BTN_SLA_", function() { return ID_AGAIN_BTN_SLA_; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ID_DATE_SOLVED1_SLA_", function() { return ID_DATE_SOLVED1_SLA_; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ID_DATE_SOLVED2_SLA_", function() { return ID_DATE_SOLVED2_SLA_; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ID_DATE_SOLVED3_SLA_", function() { return ID_DATE_SOLVED3_SLA_; });
@@ -282,6 +301,8 @@ var ID_CHKBOX_SOLVED2_SLA_ = "chkbox_solved2_sla_"; // SLAテーブルのSolved2
 var ID_CHKBOX_SOLVED3_SLA_ = "chkbox_solved3_sla_"; // SLAテーブルのSolved3列のチェックボックスのIDのprefix (chkbox_solved3_sla_abc131_a)
 
 var ID_DEL_BTN_SLA_ = "del_btn_sla_"; // SLAテーブルのDeleteボタンのIDのprefix (del_btn_sla_abc131_a)
+
+var ID_AGAIN_BTN_SLA_ = "again_btn_sla_"; // SLAテーブルのAgainボタンのIDのprefix (again_btn_sla_abc131_a)
 
 var ID_DATE_SOLVED1_SLA_ = "date_solved1_sla_"; // SLAテーブルの問題を解いたときの年月日のdivのidのprefix (date_solved1_sla_abc131_a)
 
@@ -470,7 +491,7 @@ var CAN_MAKE_CHKBOX_RETRY_COUNT = 60; // ページのDOMが構成されるのを
 /*!*******************************!*\
   !*** ./src/dom_operations.js ***!
   \*******************************/
-/*! exports provided: make_checkboxes, make_base_html, make_new_tr_sla, hilight_problems, unhilight_problems */
+/*! exports provided: make_checkboxes, make_base_html, make_new_tr_sla, initialize_problem_status, hilight_problems, unhilight_problem */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -478,8 +499,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "make_checkboxes", function() { return make_checkboxes; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "make_base_html", function() { return make_base_html; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "make_new_tr_sla", function() { return make_new_tr_sla; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "initialize_problem_status", function() { return initialize_problem_status; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "hilight_problems", function() { return hilight_problems; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "unhilight_problems", function() { return unhilight_problems; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "unhilight_problem", function() { return unhilight_problem; });
 /* harmony import */ var _click_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./click.js */ "./src/click.js");
 
 
@@ -665,9 +687,10 @@ function make_base_html() {
   var th_solved3 = document.createElement("th");
   th_solved3.textContent = "Solved 3 (" + String(consts.SOLVED3_DAYS) + " Days Later)";
   tr_thead.appendChild(th_solved3);
-  var th_delete = document.createElement("th");
-  th_delete.textContent = "Delete";
-  tr_thead.appendChild(th_delete);
+  var th_buttons = document.createElement("th");
+  th_buttons.textContent = "Buttons";
+  th_buttons.colSpan = "2";
+  tr_thead.appendChild(th_buttons);
   var tbody = document.createElement("tbody");
   table_container_body.appendChild(tbody);
   return html;
@@ -678,51 +701,79 @@ function make_new_tr_sla(problem_name, a_tag) {
   var tr = document.createElement("tr");
   tr.setAttribute("id", consts.ID_TR_SLA_ + problem_name);
   var td1 = document.createElement("td");
-  td1.appendChild(a_tag);
+  td1.appendChild(a_tag); // Solved1, 2, 3の td要素。あとで初期化する
+
   var td2 = document.createElement("td");
-  var checkbox2 = document.createElement("input");
-  checkbox2.setAttribute("type", "checkbox");
-  checkbox2.setAttribute("id", consts.ID_CHKBOX_SOLVED1_SLA_ + problem_name);
-  checkbox2.addEventListener("click", _click_js__WEBPACK_IMPORTED_MODULE_0__["click_chkbox_solved_sla"]);
-  checkbox2.checked = false;
-  checkbox2.disabled = false;
-  td2.appendChild(checkbox2);
   var td3 = document.createElement("td");
-  var checkbox3 = document.createElement("input");
-  checkbox3.setAttribute("type", "checkbox");
-  checkbox3.setAttribute("id", consts.ID_CHKBOX_SOLVED2_SLA_ + problem_name);
-  checkbox3.addEventListener("click", _click_js__WEBPACK_IMPORTED_MODULE_0__["click_chkbox_solved_sla"]);
-  checkbox3.checked = false;
-  checkbox3.disabled = true;
-  td3.appendChild(checkbox3);
   var td4 = document.createElement("td");
-  var checkbox4 = document.createElement("input");
-  checkbox4.setAttribute("type", "checkbox");
-  checkbox4.setAttribute("id", consts.ID_CHKBOX_SOLVED3_SLA_ + problem_name);
-  checkbox4.addEventListener("click", _click_js__WEBPACK_IMPORTED_MODULE_0__["click_chkbox_solved_sla"]);
-  checkbox4.checked = false;
-  checkbox4.disabled = true;
-  td4.appendChild(checkbox4);
   var td5 = document.createElement("td");
-  td5.classList.add("td-sla-delete");
-  var button_del = document.createElement("input");
-  button_del.setAttribute("type", "button");
-  button_del.setAttribute("value", "Delete");
-  button_del.setAttribute("id", consts.ID_DEL_BTN_SLA_ + problem_name);
-  button_del.classList.add("btn");
-  button_del.classList.add("btn-secondary");
-  button_del.classList.add("btn-sla-delete");
-  button_del.addEventListener("click", _click_js__WEBPACK_IMPORTED_MODULE_0__["click_del_btn_sla"]);
-  td5.appendChild(button_del);
+  td5.classList.add("td-sla-again");
+  var btn_again = document.createElement("input");
+  btn_again.setAttribute("type", "button");
+  btn_again.setAttribute("value", "ReAgain");
+  btn_again.setAttribute("id", consts.ID_AGAIN_BTN_SLA_ + problem_name);
+  btn_again.classList.add("btn"); //btn_again.classList.add("btn-secondary");
+
+  btn_again.classList.add("btn-sla-again");
+  btn_again.addEventListener("click", _click_js__WEBPACK_IMPORTED_MODULE_0__["click_again_btn_sla"]);
+  td5.appendChild(btn_again);
+  var td6 = document.createElement("td");
+  td6.classList.add("td-sla-delete");
+  var btn_del = document.createElement("input");
+  btn_del.setAttribute("type", "button");
+  btn_del.setAttribute("value", "Delete");
+  btn_del.setAttribute("id", consts.ID_DEL_BTN_SLA_ + problem_name);
+  btn_del.classList.add("btn");
+  btn_del.classList.add("btn-secondary");
+  btn_del.classList.add("btn-sla-delete");
+  btn_del.addEventListener("click", _click_js__WEBPACK_IMPORTED_MODULE_0__["click_del_btn_sla"]);
+  td6.appendChild(btn_del);
   tr.appendChild(td1);
   tr.appendChild(td2);
   tr.appendChild(td3);
   tr.appendChild(td4);
-  tr.appendChild(td5); // Solve Later Againのtbodyに、tr要素を追加する
+  tr.appendChild(td5);
+  tr.appendChild(td6); // Solve Later Againのtbodyに、tr要素を追加する
 
   var root_div = document.getElementById(consts.ID_SLA_ROOT);
   var tbody = root_div.getElementsByTagName("tbody")[0];
   tbody.appendChild(tr);
+  initialize_problem_status(problem_name);
+} //[END function]
+//[START function]
+
+function initialize_problem_status(problem_name) {
+  /* SLAテーブルの指定の問題の状態を初期化する */
+  var target_tr = document.getElementById(consts.ID_TR_SLA_ + problem_name);
+  var tds = target_tr.getElementsByTagName("td"); // solved1
+
+  tds[1].textContent = null; // 子要素を全て削除
+
+  var chkbox1 = document.createElement("input");
+  chkbox1.setAttribute("type", "checkbox");
+  chkbox1.setAttribute("id", consts.ID_CHKBOX_SOLVED1_SLA_ + problem_name);
+  chkbox1.addEventListener("click", _click_js__WEBPACK_IMPORTED_MODULE_0__["click_chkbox_solved_sla"]);
+  tds[1].appendChild(chkbox1);
+  chkbox1.checked = false;
+  chkbox1.disabled = false; // solved2
+
+  tds[2].textContent = null;
+  var chkbox2 = document.createElement("input");
+  chkbox2.setAttribute("type", "checkbox");
+  chkbox2.setAttribute("id", consts.ID_CHKBOX_SOLVED2_SLA_ + problem_name);
+  chkbox2.addEventListener("click", _click_js__WEBPACK_IMPORTED_MODULE_0__["click_chkbox_solved_sla"]);
+  tds[2].appendChild(chkbox2);
+  chkbox2.checked = false;
+  chkbox2.disabled = true; // solved3
+
+  tds[3].textContent = null;
+  var chkbox3 = document.createElement("input");
+  chkbox3.setAttribute("type", "checkbox");
+  chkbox3.setAttribute("id", consts.ID_CHKBOX_SOLVED3_SLA_ + problem_name);
+  chkbox3.addEventListener("click", _click_js__WEBPACK_IMPORTED_MODULE_0__["click_chkbox_solved_sla"]);
+  tds[3].appendChild(chkbox3);
+  chkbox3.checked = false;
+  chkbox3.disabled = true;
 } //[END function]
 //[START function]
 
@@ -807,7 +858,7 @@ function hilight_problems() {
 } //[END function]
 //[START function]
 
-function unhilight_problems(problem_name, solved_num) {
+function unhilight_problem(problem_name, solved_num) {
   /* SLAテーブルの指定の問題のハイライトを解除する */
   var target_tr = document.getElementById(consts.ID_TR_SLA_ + problem_name);
   target_tr.style.backgroundColor = "";

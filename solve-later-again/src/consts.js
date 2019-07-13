@@ -12,6 +12,7 @@ export const ID_CHKBOX_SOLVED1_SLA_ = "chkbox_solved1_sla_"  // SLAテーブル�
 export const ID_CHKBOX_SOLVED2_SLA_ = "chkbox_solved2_sla_"  // SLAテーブルのSolved2列のチェックボックスのIDのprefix (chkbox_solved2_sla_abc131_a)
 export const ID_CHKBOX_SOLVED3_SLA_ = "chkbox_solved3_sla_"  // SLAテーブルのSolved3列のチェックボックスのIDのprefix (chkbox_solved3_sla_abc131_a)
 export const ID_DEL_BTN_SLA_ = "del_btn_sla_"  // SLAテーブルのDeleteボタンのIDのprefix (del_btn_sla_abc131_a)
+export const ID_AGAIN_BTN_SLA_ = "again_btn_sla_"  // SLAテーブルのAgainボタンのIDのprefix (again_btn_sla_abc131_a)
 export const ID_DATE_SOLVED1_SLA_ = "date_solved1_sla_"  // SLAテーブルの問題を解いたときの年月日のdivのidのprefix (date_solved1_sla_abc131_a)
 export const ID_DATE_SOLVED2_SLA_ = "date_solved2_sla_"  // SLAテーブルの問題を解いたときの年月日のdivのidのprefix (date_solved2_sla_abc131_a)
 export const ID_DATE_SOLVED3_SLA_ = "date_solved3_sla_"  // SLAテーブルの問題を解いたときの年月日のdivのidのprefix (date_solved3_sla_abc131_a)

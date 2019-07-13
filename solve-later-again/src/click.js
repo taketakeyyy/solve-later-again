@@ -1,7 +1,32 @@
 'use strict';
 
-import { make_new_tr_sla, unhilight_problems } from "./dom_operations.js";
+import {
+    make_new_tr_sla,
+    unhilight_problem,
+    initialize_problem_status,
+} from "./dom_operations.js";
 const consts = require("./consts.js");
+
+
+// [START function]
+export function click_again_btn_sla(e){
+    /* Againボタンをクリックしたときの処理 
+
+    * SLAのテーブルのこの問題を初期状態に戻す
+
+    Args:
+        e(event): クリックされたボタンのイベント
+    */
+
+    const problem_name = e.target.getAttribute("id").slice(consts.ID_AGAIN_BTN_SLA_.length);
+
+    initialize_problem_status(problem_name);
+    for(let i=1; i<consts.SOLVED_MAX+1; i++){
+        unhilight_problem(problem_name, i);
+    }
+    save_solve_later_again(problem_name);
+}
+// [END function]
 
 // [START function]
 export function click_del_btn_sla(e){
@@ -135,7 +160,7 @@ export function click_chkbox_solved_sla(e){
 
     func(solved_num);
 
-    unhilight_problems(problem_name, solved_num);
+    unhilight_problem(problem_name, solved_num);
 
     // 現在のテーブル状態を保存する
     save_solve_later_again(problem_name);

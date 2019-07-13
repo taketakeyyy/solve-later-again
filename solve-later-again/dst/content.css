@@ -1,9 +1,23 @@
+.btn.btn-sla-again {
+    padding-top: .10rem;
+    padding-bottom: .10rem;
+    width: 80%;
+    color: #ffffff;
+    background-color: #4487cebb;
+    border-color: #4487cebb;
+    /* border-color: #4487ce;*/
+}
+
 .btn.btn-sla-delete {
     padding-top: .10rem;
     padding-bottom: .10rem;
     width: 80%;
 }
 
-.table td.td-sla-delete{
+.table td.td-sla-delete {
+    text-align: center;
+}
+
+.table td.td-sla-again {
     text-align: center;
 }
