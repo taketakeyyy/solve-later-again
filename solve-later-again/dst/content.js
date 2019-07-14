@@ -507,7 +507,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var consts = __webpack_require__(/*! ./consts.js */ "./src/consts.js");
+var consts = __webpack_require__(/*! ./consts.js */ "./src/consts.js"); //[START function]
+
 
 function _append_checkboxes(elem_h2, col_num) {
   /* ABC, ARC, AGCの各問題にチェックボックス要素を追加する
@@ -597,7 +598,34 @@ function _append_checkboxes(elem_h2, col_num) {
       continue;
     }
   }
-}
+} //[END function]
+//[START function]
+
+
+function _append_checkboxes_other_contests() {
+  /* Other Contests(企業コン)の各問題にチェックボックス要素を追加する */
+  var divs = document.getElementsByClassName("table-responsive");
+
+  for (var i = 0; i < divs.length; i++) {
+    var target_tbody = divs[i].getElementsByTagName("tbody")[0];
+    var target_tr = target_tbody.getElementsByTagName("tr")[0];
+    var tds = target_tr.getElementsByTagName("td");
+
+    for (var j = 0; j < tds.length; j++) {
+      var a = tds[j].getElementsByTagName("a")[0];
+      var href_texts = a.getAttribute("href").split("/");
+      var problem_name = href_texts[href_texts.length - 1];
+      var checkbox = document.createElement("input");
+      checkbox.setAttribute("type", "checkbox");
+      checkbox.checked = false;
+      checkbox.addEventListener("click", _click_js__WEBPACK_IMPORTED_MODULE_0__["click_chkbox_sla"]);
+      checkbox.setAttribute("id", consts.ID_CHKBOX_SLA_ + problem_name);
+      tds[j].insertBefore(checkbox, tds[j].firstChild);
+    }
+  }
+} //[END function]
+//[START function]
+
 
 function make_checkboxes() {
   /* 各問題に、Solve Later Againテーブルに問題を追加するためのチェックボックス要素を作成する */
@@ -612,7 +640,11 @@ function make_checkboxes() {
       _append_checkboxes(h2s[i], consts.AGC_COL_NUM);
     }
   }
-}
+
+  _append_checkboxes_other_contests();
+} //[END function]
+//[START function]
+
 function make_base_html() {
   /* Solve Later Again セクションの基本的なHTMLを作成する */
   var html = document.createElement("div");
@@ -694,7 +726,8 @@ function make_base_html() {
   var tbody = document.createElement("tbody");
   table_container_body.appendChild(tbody);
   return html;
-} //[START function]
+} //[END function]
+//[START function]
 
 function make_new_tr_sla(problem_name, a_tag) {
   // SLAテーブルの新しいtr要素を作成する

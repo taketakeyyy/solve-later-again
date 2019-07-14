@@ -8,6 +8,7 @@ import {
 } from "./click.js";
 const consts = require("./consts.js");
 
+//[START function]
 function _append_checkboxes(elem_h2, col_num){
     /* ABC, ARC, AGCの各問題にチェックボックス要素を追加する
     Args:
@@ -74,7 +75,33 @@ function _append_checkboxes(elem_h2, col_num){
         }
     }
 }
+//[END function]
 
+//[START function]
+function _append_checkboxes_other_contests(){
+    /* Other Contests(企業コン)の各問題にチェックボックス要素を追加する */
+    const divs = document.getElementsByClassName("table-responsive");
+    for(let i=0; i<divs.length; i++){
+        const target_tbody = divs[i].getElementsByTagName("tbody")[0];
+        const target_tr = target_tbody.getElementsByTagName("tr")[0];
+        const tds = target_tr.getElementsByTagName("td");
+        for(let j=0; j<tds.length; j++){
+            const a = tds[j].getElementsByTagName("a")[0];
+            const href_texts = a.getAttribute("href").split("/");
+            const problem_name = href_texts[href_texts.length-1];
+
+            const checkbox = document.createElement("input");
+            checkbox.setAttribute("type", "checkbox");
+            checkbox.checked = false;
+            checkbox.addEventListener("click", click_chkbox_sla);
+            checkbox.setAttribute("id", consts.ID_CHKBOX_SLA_+problem_name);
+            tds[j].insertBefore(checkbox, tds[j].firstChild);
+        }
+    }
+}
+//[END function]
+
+//[START function]
 export function make_checkboxes(){
     /* 各問題に、Solve Later Againテーブルに問題を追加するためのチェックボックス要素を作成する */
     const h2s = document.getElementsByTagName("h2");
@@ -89,8 +116,11 @@ export function make_checkboxes(){
             _append_checkboxes(h2s[i], consts.AGC_COL_NUM);
         }
     }
+    _append_checkboxes_other_contests();
 }
+//[END function]
 
+//[START function]
 export function make_base_html(){
     /* Solve Later Again セクションの基本的なHTMLを作成する */
     const html = document.createElement("div");
@@ -192,9 +222,9 @@ export function make_base_html(){
     const tbody = document.createElement("tbody");
     table_container_body.appendChild(tbody);
 
-
     return html;
 }
+//[END function]
 
 //[START function]
 export function make_new_tr_sla(problem_name, a_tag){
