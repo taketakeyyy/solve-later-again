@@ -19,8 +19,8 @@ export const ID_DATE_SOLVED3_SLA_ = "date_solved3_sla_"  // SLAテーブルの�
 
 export const ID_CHKBOX_SLA_ = "chkbox_sla_"  // 各問題のチェックボックスのIDのprefix (chkbox_sla_abc131_a)
 
-export const SOLVED2_DAYS = 0;   // Solved2 はX日後に解き直す
-export const SOLVED3_DAYS = 3;  // Solved3 はX日後に解き直す
+export const SOLVED2_DAYS = 7;  // Solved2 はX日後に解き直す
+export const SOLVED3_DAYS = 30;  // Solved3 はX日後に解き直す
 
 export const WDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
