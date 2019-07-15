@@ -5,7 +5,10 @@ module.exports = {
         path: __dirname + "/dst",
         filename: 'content.js',
     },
-    devtool: "source-map",
+    optimization: {
+        minimize: true,
+    },
+    //devtool: "source-map",
     module: {
         rules: [
             {
