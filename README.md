@@ -7,6 +7,9 @@ You can manage problems you want to solve later again on AtCoderProblems.
 
 ## Getting Started
 
+[Install from Chrome Web Store](https://chrome.google.com/webstore/detail/emndffmnlppiaelhdneheagpaancfahk/publish-accepted?authuser=0&hl=ja).
+
+
 1. When installed, the AtCoderProblems Table page will have a "Solve Later Again" table.
 
 2. Checking a checkbox of a problem which you think "It would be better to try again🤔" will add the problem to the "Solve Later Again" table.
