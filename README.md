@@ -11,7 +11,14 @@ Chrome extension which generates a "Solve Later Again" section on AtCoder Proble
 ### node.js
 10.16.0 LTS
 
-### webpack 4
-Installation: See [webpack - Installation](https://webpack.js.org/guides/installation/).
+### Installation Environment
 
-Version: See `solve-later-again/package.json`.
+Now, your current directory is the same to `solve-later-again/package.json`. Type following:
+
+`npm install`
+
+
+#### webpack 4
+Installation: In the above "Installation Environment", it should already be installed.  If not, see [webpack - Installation](https://webpack.js.org/guides/installation/).
+
+Version: See `solve-later-again/package.json` or `solve-later-again/package-lock.json`.
