@@ -1,11 +1,33 @@
 # solve-later-again
-Chrome extension which generates a "Solve Later Again" section on AtCoder Problems.
+Chrome extension.
+
+You can manage problems you want to solve later again on AtCoderProblems.
+
+![Screenshot](solve-later-again\img\screenshot1_1280x800.png "Screenshot")
+
+## Getting Started
+
+1. When installed, the AtCoderProblems Table page will have a "Solve Later Again" table.
+
+2. Checking a checkbox of a problem which you think "It would be better to try again🤔" will add the problem to the "Solve Later Again" table.
+
+3. When you solved the problem, check the "Solved 1" check box. Then the date you solve is printed.
+
+4. After 7 days, "Solved 2" will be highlighted, so try again to solve.
+
+5. After 30 days, "Solved 3" will be highlighted, so try again to solve.
+
+6. Omg, you would ...
+    * never mistake similar problems😎.
+    * become a strong strong man💪.
 
 
 # For Devs
 ## Project Files
-* dst directory
-  - chrome extension package.
+* `solve-later-again/dst/`
+    * Files to publish for chrome extension.
+* `solve-later-again/src/`
+    * Files for `solve-later-again/dst/content.js`. They are built with webpack.
 
 ## Development Environment Installation
 ### node.js
@@ -26,8 +48,10 @@ Now, your current directory is the same to `solve-later-again/package.json`. Typ
 * Version: See `solve-later-again/package.json` or `solve-later-again/package-lock.json`.
 
 ### How to develop
-#### Step1
-Now, your current directory is the same to `solve-later-again/package.json`. Type following:
+All files to publish are `solve-later-again/dst/*`. But only `content.js` file is built with webpack.
+
+#### content.js
+Now, your current directory is the same to `solve-later-again/node_modules` (This is generated when "Install Development Environment" section). Type following:
 
 `> ./node_modules/webpack-cli/bin/cli.js --mode=development -w`
 
@@ -37,8 +61,14 @@ Production build is:
 
 `> ./node_modules/webpack-cli/bin/cli.js --mode=production`
 
-#### Step2
 
-The final codes to publish are `solve-later-again/dst/*`.
+#### Other files
 
-Zip the files and publish on the Chrome Web Store.
+Modify directly.
+
+
+#### Publish
+
+The final files to publish are `solve-later-again/dst/*`.
+
+Zip `solve-later-again/dst/` and publish on the Chrome Web Store.
