@@ -3,7 +3,7 @@ Chrome extension.
 
 You can manage problems you want to solve later again on AtCoderProblems.
 
-![Screenshot](solve-later-again\img\screenshot1_1280x800.png "Screenshot")
+![Screenshot](https://github.com/taketakeyyy/solve-later-again/blob/master/solve-later-again/img/screenshot1_1280x800.png "Screenshot")
 
 ## Getting Started
 
