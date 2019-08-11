@@ -42,7 +42,9 @@ You can manage problems you want to solve later again on AtCoderProblems.
 
 Now, your current directory is the same to `solve-later-again/package.json`. Type following:
 
-`> npm install`
+`> npm ci`
+
+(If got errors and failed to run, type `> npm install`.)
 
 
 #### webpack 4
