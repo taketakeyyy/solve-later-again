@@ -2,8 +2,8 @@
 solve-later-again/node_modules
 solve-later-again/node_modules/**
 
-*.js.map
+solve-later-again/dst/content.js
 
-dst/content.js
+*.js.map
 
 # Don't ignore following files
