@@ -8,20 +8,32 @@
     /* ABC, ARC, AGCの各問題のDOMが構築されているかをチェックする
     *   Args:
     *       elem_h2: テーブルのh2要素
+    *
+    *   Notes:
+    *       DOMが作成される判定は、「ABC001」のtr要素のような最後のtr要素が作成されるまで待ったほうが良い。
+    *
     */
     function _exist_doms(elem_h2){
         const root_div = elem_h2.parentNode;
         const tbody = root_div.getElementsByTagName("tbody")[0];
-        const tds = tbody.getElementsByTagName("td");
-    
-        if(tds.length === 1){
+        const trs = tbody.getElementsByTagName("tr");
+
+        if(trs.length === 1){
             // DOMがまだ構成されていない場合
             return false;
         }
+
+        // 最後のtr要素（ABC001の要素）が作成され、その中のtd要素の長さが十分に作成されているならOKとする
+        const last_tr = trs[trs.length-1];
+        const last_tr_tds = last_tr.getElementsByTagName("td");
+        if(last_tr_tds.length < 2){
+            return false;
+        }
+
         return true;
     }
     // [END function]
-    
+
     // [START function]
     function _can_make_checkboxes(){
         /* 各問題に、Solve Later Againテーブルに問題を追加するためのチェックボックス要素を作成するための準備ができているか？
@@ -54,7 +66,7 @@
                     const target_chkbox = document.getElementById("chkbox_"+sla_id);
                     const a_tag = target_chkbox.parentNode.getElementsByTagName("a")[0].cloneNode(true);
                     dom_ope.make_new_tr_sla(sla_id.slice(4), a_tag);
-    
+
                     // tr要素のSolved列が年月日の場合はそれに変更する
                     for(let i=1; i<=consts.SOLVED_MAX; i++){
                         const solved_date = loaded_data[sla_id]["solved"+String(i)];
@@ -66,7 +78,7 @@
                         div.innerText = solved_date;
                         parent_td.appendChild(div);
                     }
-    
+
                     // tr要素のSolved列のチェックボックスの中で、クリック可能にするものを決定する
                     for(let i=1; i<=consts.SOLVED_MAX; i++){
                         const chkbox = document.getElementById("chkbox_solved"+String(i)+"_"+sla_id);
@@ -74,12 +86,12 @@
                         chkbox.disabled = false;
                         break;
                     }
-    
+
                     // 問題のチェックボックスにチェックを入れる
                     target_chkbox.checked = true;
                 }
                 resolve();
-                return;    
+                return;
             });
         });
     }

@@ -4,4 +4,6 @@ solve-later-again/node_modules/**
 
 *.js.map
 
+dst/content.js
+
 # Don't ignore following files
