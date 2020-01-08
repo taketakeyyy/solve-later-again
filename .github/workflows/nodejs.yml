@@ -1,6 +1,7 @@
+# https://help.github.com/ja/actions/automating-your-workflow-with-github-actions/workflow-syntax-for-github-actions
 name: Node CI
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
   build:
@@ -17,10 +18,16 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
+
+    - name: Tell me where workspace is
+      working-directory: ${{ github.workspace }}
+      run: ls -la
+        
     - name: npm install, build, and test
       run: |
         npm ci
         npm run build --if-present
         npm test
+      working-directory: ./solve-later-again
       env:
         CI: true
