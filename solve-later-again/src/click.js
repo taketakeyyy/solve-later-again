@@ -10,7 +10,7 @@ const consts = require("./consts.js");
 
 // [START function]
 export function click_again_btn_sla(e){
-    /* Againボタンをクリックしたときの処理 
+    /* Againボタンをクリックしたときの処理
 
     * SLAのテーブルのこの問題を初期状態に戻す
 
@@ -30,7 +30,7 @@ export function click_again_btn_sla(e){
 
 // [START function]
 export function click_del_btn_sla(e){
-    /* Deleteボタンをクリックしたときの処理 
+    /* Deleteボタンをクリックしたときの処理
 
     * SLAのテーブルからこの問題を削除する
     * この問題のチェックボックスのチェックを外す
@@ -126,7 +126,7 @@ function save_solve_later_again(problem_name){
 // [START function]
 export function click_chkbox_solved_sla(e){
     /* Solved Later Againテーブルの Solved のチェックボックスをクリックしたときの処理
-    
+
     * Solved1のチェックが入ったら、クリックされた年月日をいれて、Solved2をクリック可能にする
     * Solved2のチェックが入ったら、クリックされた年月日をいれて、Solved3をクリック可能にする
     * Solved3のチェックが入ったら、クリックされた年月日をいれる
@@ -164,5 +164,57 @@ export function click_chkbox_solved_sla(e){
 
     // 現在のテーブル状態を保存する
     save_solve_later_again(problem_name);
+}
+// [END function]
+
+
+// [START function]
+export function click_show_sla_table_sla(e) {
+    /* Show SLA Table のチェックボックスをクリックしたときのクリックイベント処理
+
+    Args:
+        e(event): クリックされたチェックボックスのイベント
+    */
+    on_click_show_sla_table_sla(e.target.checked, true);
+}
+// [END function]
+
+
+// [START function]
+export function on_click_show_sla_table_sla(is_checked, do_save) {
+    /* Show SLA Table のチェックボックスをクリックしたときの実際の処理
+
+    Args:
+        is_checked(bool): チェックボックスがチェック状態かどうか
+        do_save(bool): 状態を保存するかどうか
+    */
+    const div_sla_table_container = document.getElementById(consts.DIV_SLA_TABLE_CONTAINER);
+
+    if (is_checked) {
+        div_sla_table_container.setAttribute("style", "display: block");
+    }
+    else{
+        div_sla_table_container.setAttribute("style", "display: none");
+    }
+
+    if (do_save) {
+        _save_show_sla_table(is_checked);
+    }
+
+}
+// [END function]
+
+
+// [START function]
+function _save_show_sla_table(is_checked) {
+    /* Show SLA Tableの状態を保存する
+
+    Args:
+        is_checked(bool): チェックあり(true)/チェックなし(false)
+    */
+    let save_data = {};
+    save_data["show_sla_table"] = is_checked;
+
+    chrome.storage.sync.set(save_data);
 }
 // [END function]

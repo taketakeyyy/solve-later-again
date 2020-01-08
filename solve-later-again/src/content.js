@@ -3,6 +3,8 @@
     'use strict';
     const dom_ope = require("./dom_operations.js");
     const consts = require("./consts.js");
+    const clickjs = require("./click.js");
+
 
     // [START function]
     /* ABC, ARC, AGCの各問題のDOMが構築されているかをチェックする
@@ -62,6 +64,13 @@
         return new Promise(function (resolve, reject) {
             chrome.storage.sync.get(null, function(loaded_data){
                 for(let sla_id in loaded_data){
+                    if (sla_id === "show_sla_table") {
+                        const chkbox_show_sla_table = document.getElementById(consts.ID_CHKBOX_SHOW_SLA_TABLE);
+                        chkbox_show_sla_table.checked = loaded_data["show_sla_table"];
+                        clickjs.on_click_show_sla_table_sla(loaded_data["show_sla_table"], false);
+                        continue;
+                    }
+
                     // SLAテーブルにtr要素を作成する
                     const target_chkbox = document.getElementById("chkbox_"+sla_id);
                     const a_tag = target_chkbox.parentNode.getElementsByTagName("a")[0].cloneNode(true);

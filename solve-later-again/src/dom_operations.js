@@ -1,10 +1,11 @@
 'use strict';
 
-import { 
+import {
     click_chkbox_sla,
     click_chkbox_solved_sla,
     click_del_btn_sla,
     click_again_btn_sla,
+    click_show_sla_table_sla,
 } from "./click.js";
 const consts = require("./consts.js");
 
@@ -19,7 +20,7 @@ function _append_checkboxes(elem_h2, col_num){
     const tbody = root_div.getElementsByTagName("tbody")[0];
     const tds = tbody.getElementsByTagName("td");
     let now_contest_name = "";
-    
+
     for(let i=0; i<tds.length; i++){
         if(!tds[i].hasAttribute("tabindex")){
             continue;
@@ -126,13 +127,17 @@ export function make_base_html(){
     const html = document.createElement("div");
     html.setAttribute("id", consts.ID_SLA_ROOT);
     html.classList.add("row");
-    
+
     const h2 = document.createElement("h2");
     h2.textContent = "Solve Later Again";
+    h2.setAttribute("class", "sla-h2");
     html.appendChild(h2);
-    
+
+    html.appendChild(_make_show_sla_table_chkbox());
+
     const div_react_bs_table_container = document.createElement("div");
     div_react_bs_table_container.classList.add("react-bs-table-container");
+    div_react_bs_table_container.setAttribute("id", consts.DIV_SLA_TABLE_CONTAINER);
     html.appendChild(div_react_bs_table_container);
 
     const div_react_bs_table = document.createElement("div");
@@ -163,7 +168,7 @@ export function make_base_html(){
     table_container_body.classList.add("table");
     table_container_body.classList.add("table-bordered");
     div_react_bs_container_body.appendChild(table_container_body);
-    
+
     const colgroup_container_header = document.createElement("colgroup");
     table_container_header.appendChild(colgroup_container_header);
 
@@ -320,7 +325,7 @@ export function initialize_problem_status(problem_name){
 
 //[START function]
 function strdate2date(dt_str){
-    /* 文字列の日付をDate型に変換して返す 
+    /* 文字列の日付をDate型に変換して返す
     (例) dt_str = "2019/6/27(Thu)"
     */
     dt_str = dt_str.split('(')[0];
@@ -340,7 +345,7 @@ export function hilight_problems(){
     today.setHours(23);
     today.setMinutes(59);
     today.setSeconds(59);
-    
+
     // SLAテーブルの各問題を走査する
     const root_div = document.getElementById(consts.ID_SLA_ROOT);
     const tbody = root_div.getElementsByTagName("tbody")[0];
@@ -373,7 +378,7 @@ export function hilight_problems(){
                 return false;
             }
         }
-            
+
         // Solved 2をチェックする
         let result = hilight_if_needed(2, 60*60*24*consts.SOLVED2_DAYS*1000);
         if(result){ continue; }
@@ -395,3 +400,29 @@ export function unhilight_problem(problem_name, solved_num){
     tds[solved_num].style.backgroundColor = "";
 }
 //[END function]
+
+//[START function]
+function _make_show_sla_table_chkbox(){
+    /* Show SLA Table のチェックボックスを作成する */
+
+    const show_sla_table_chkbox = document.createElement("input");
+    show_sla_table_chkbox.setAttribute("type", "checkbox");
+    show_sla_table_chkbox.setAttribute("class", "form-check-input");
+    show_sla_table_chkbox.setAttribute("id", consts.ID_CHKBOX_SHOW_SLA_TABLE);
+    show_sla_table_chkbox.addEventListener("click", click_show_sla_table_sla);
+
+    const show_sla_table_label = document.createElement("label");
+    show_sla_table_label.setAttribute("class", "form-check-label");
+    show_sla_table_label.innerText = "Show SLA Table";
+    show_sla_table_label.insertBefore(show_sla_table_chkbox, show_sla_table_label.firstChild);
+
+    const show_sla_table_div = document.createElement("div");
+    show_sla_table_div.setAttribute("class", "form-check form-check-inline");
+    show_sla_table_div.insertBefore(show_sla_table_label, show_sla_table_div.firstChild);
+
+    const base_div = document.createElement("div");
+    base_div.setAttribute("class", "");
+    base_div.insertBefore(show_sla_table_div, base_div.firstChild);
+
+    return base_div;
+}
