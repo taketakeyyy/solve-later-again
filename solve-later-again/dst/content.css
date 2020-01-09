@@ -25,3 +25,7 @@
 .sla-h2 {
     width: 100%;
 }
+
+.sla-table-container {
+    display: none;
+}

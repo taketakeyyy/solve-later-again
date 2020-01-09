@@ -137,8 +137,8 @@ export function make_base_html(){
 
     const div_react_bs_table_container = document.createElement("div");
     div_react_bs_table_container.classList.add("react-bs-table-container");
+    div_react_bs_table_container.classList.add("sla-table-container");
     div_react_bs_table_container.setAttribute("id", consts.DIV_SLA_TABLE_CONTAINER);
-    div_react_bs_table_container.setAttribute("style", "display: none;");
     html.appendChild(div_react_bs_table_container);
 
     const div_react_bs_table = document.createElement("div");
