@@ -44,35 +44,35 @@ Now, your current directory is the same to `solve-later-again/package.json`. Typ
 
 `> npm ci`
 
-(If got errors and failed to run, type `> npm install`.)
 
-
-#### webpack 4
+### webpack 4
 * Installation: In the above "Install Development Environment" section, it should already be installed.  If not, see [webpack - Installation](https://webpack.js.org/guides/installation/).
 
 * Version: See `solve-later-again/package.json` or `solve-later-again/package-lock.json`.
 
-### How to develop
+
+## How to develop
 All files to publish are `solve-later-again/dst/*`. But only `content.js` file is built with webpack.
 
-#### content.js
+
+### content.js
 Now, your current directory is the same to `solve-later-again/node_modules` (This is generated when "Install Development Environment" section). Type following:
 
-`> ./node_modules/webpack-cli/bin/cli.js --mode=development -w`
+`> npm run build-test`
 
-Then, fix and append codes in `solve-later-again/src/*.js`. When built with webpack, `resolve-later-again/dst/content.js` is updated.
+This command means "build with watch-mode and development-mode". In detail, see `package.json` file. Then, fix and append codes in `solve-later-again/src/*.js`. When built with webpack, `resolve-later-again/dst/content.js` is updated.
 
 Production build is:
 
-`> ./node_modules/webpack-cli/bin/cli.js --mode=production`
+`> npm run build`
 
 
-#### Other files
+### Other files
 
 Modify directly.
 
 
-#### Publish
+## Publish (and Update)
 
 The final files to publish are `solve-later-again/dst/*`.
 
