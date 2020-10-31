@@ -5,6 +5,8 @@
     const consts = require("./consts.js");
     const clickjs = require("./click.js");
 
+    let g_semaph_can_make_chkbox = true;  // 問題のチェックボックスを作成可能かどうかのセマフォ
+
 
     // [START function]
     /* ABC, ARC, AGCの各問題のDOMが構築されているかをチェックする
@@ -118,7 +120,11 @@
                 async_load_storage
             ).then(
                 dom_ope.hilight_problems
-            );
+            ).then(
+                make_table_tab_tag
+            ).then(() => {
+                g_semaph_can_make_chkbox = true;
+            });
     }
     // [END function]
 
@@ -135,6 +141,9 @@
     function async_can_make_checkboxes(try_count) {
         /* ページのDOMが構築されるまで処理を待つ */
         return new Promise(function (resolve, reject) {
+            if (!g_semaph_can_make_chkbox) return;
+            g_semaph_can_make_chkbox = false;
+
             const is_success = _can_make_checkboxes();
             if(is_success || try_count === 0){
                 resolve();
@@ -144,6 +153,73 @@
             return;
         });
     };
+    // [END function]
+
+    // [START function]
+    function async_can_remake_checkboxes(try_count) {
+        /* ページのDOMが構築されるまで処理を待つ */
+        return new Promise(function (resolve, reject) {
+            const is_success = _can_make_checkboxes();
+            if(is_success || try_count === 0){
+                resolve();
+                return;
+            }
+            reject(--try_count);
+            return;
+        });
+    };
+    // [END function]
+
+    // [START function]
+    function on_fullfilled_can_remake_checkboxes() {
+        // make_checkboxes()が正常に成功した or リトライ回数を超えたら、しょうがないので諦めてそのまま次の処理へ。
+        // 各ABC, ARC, AGC等の問題にチェックボックスをつける
+        return Promise.resolve()
+            .then(() => {
+                dom_ope.make_checkboxes();
+            })
+            .then(() => {
+                g_semaph_can_make_chkbox = true;
+            });
+    }
+    // [END function]
+
+    // [START function]
+    function on_rejected_can_remake_checkboxes(try_count) {
+        // make_checkboxes()に失敗したときの処理
+        setTimeout(function () {
+            async_can_remake_checkboxes(try_count).then(on_fullfilled_can_remake_checkboxes, on_rejected_can_remake_checkboxes);
+        }, consts.CAN_MAKE_CHKBOX_WAIT_MSEC);
+    };
+    // [END function]
+
+    //[START function]
+    function remake_chkboxes() {
+        if (!g_semaph_can_make_chkbox) return;
+        g_semaph_can_make_chkbox = false;
+        setTimeout(function () {
+            async_can_remake_checkboxes(consts.CAN_MAKE_CHKBOX_RETRY_COUNT).then(on_fullfilled_can_remake_checkboxes, on_rejected_can_remake_checkboxes)
+        }, consts.CAN_MAKE_CHKBOX_WAIT_MSEC);
+    }
+    // [END function]
+
+    //[START function]
+    function make_table_tab_tag(){
+        /* table tabにクリックイベントを追加する */
+        const divs = document.getElementsByTagName("div");
+
+        /* table tagのdiv要素を探す */
+        let target_div;  // table tagのdiv要素
+        for (let i=0; i<divs.length; i++) {
+            if (!divs[i].hasAttribute("role") || divs[i].firstChild===null || divs[i].firstChild.innerText!=="ABC") continue;
+            target_div = divs[i];
+        }
+
+        /* table tagの各子要素にクリックイベントを追加する */
+        for (let i=0; i<target_div.children.length; i++) {
+            target_div.children[i].addEventListener("click", remake_chkboxes);
+        }
+    }
     // [END function]
 
     chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse){

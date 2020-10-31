@@ -3,7 +3,7 @@
 export const SOLVED_MAX = 3;  // Solved3 まで
 
 export const ABC_COL_NUM = 7;  // ABCの列数
-export const ARC_COL_NUM = 5;  // ARCの列数
+export const ARC_COL_NUM = 7;  // ARCの列数
 export const AGC_COL_NUM = 8;  // AGCの列数
 
 export const ID_SLA_ROOT = "sla_root";  // Solve Later Again(SLA)テーブルのdivのid
