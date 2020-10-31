@@ -222,6 +222,7 @@
     }
     // [END function]
 
+    // [START Entry Point]
     chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse){
         if(document.getElementById(consts.ID_SLA_ROOT) !== null){ return false; }
         const root_div = document.getElementById('root');
@@ -232,6 +233,7 @@
 
         async_can_make_checkboxes(consts.CAN_MAKE_CHKBOX_RETRY_COUNT).then(on_fullfilled_can_make_checkboxes, on_rejected_can_make_checkboxes);
     });
+    // [END Entry Point]
 
 })();
 
