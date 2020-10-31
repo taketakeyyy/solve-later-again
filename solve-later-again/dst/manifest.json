@@ -2,7 +2,7 @@
     "manifest_version": 2,
     "name": "Solve Later Again",
     "short_name": "SLA",
-    "version": "1.2.1",
+    "version": "1.3.0",
     "author": "taketakeyyy",
     "description": "Append a 'Solve Later Again' table on AtCoder Problems",
 

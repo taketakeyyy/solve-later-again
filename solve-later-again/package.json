@@ -12,10 +12,10 @@
   "author": "taketakeyyy",
   "license": "MIT",
   "devDependencies": {
-    "@babel/core": "^7.7.7",
-    "@babel/preset-env": "^7.7.7",
-    "babel-loader": "^8.0.6",
-    "webpack": "^4.41.5",
-    "webpack-cli": "^3.3.10"
+    "@babel/core": "^7.12.3",
+    "@babel/preset-env": "^7.12.1",
+    "babel-loader": "^8.1.0",
+    "webpack": "^4.44.2",
+    "webpack-cli": "^3.3.12"
   }
 }
