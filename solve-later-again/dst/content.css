@@ -2,11 +2,13 @@
     padding-top: .10rem;
     padding-bottom: .10rem;
     width: 80%;
-    color: #ffffff;
-    background-color: #4487cebb;
-    border-color: #4487cebb;
-    /* border-color: #4487ce;*/
+    color: #ffffff !important;
+    background-color: #4487cebb !important;
 }
+.btn.btn-sla-again:hover {
+    background-color: #0e7cf1bb !important;
+}
+
 
 .btn.btn-sla-delete {
     padding-top: .10rem;
