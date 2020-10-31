@@ -80,7 +80,9 @@ function _append_checkboxes(elem_h2, col_num){
 
 //[START function]
 function _append_checkboxes_other_contests(){
-    /* Other Contests(企業コン)の各問題にチェックボックス要素を追加する */
+    /* Other Contests(企業コン)の各問題にチェックボックス要素を追加する
+        ABC-Likeコンテストや、PASTなどもここに含まれる
+    */
     const divs = document.getElementsByClassName("table-responsive");
     for(let i=0; i<divs.length; i++){
         const target_tbody = divs[i].getElementsByTagName("tbody")[0];
@@ -115,6 +117,12 @@ export function make_checkboxes(){
         }
         else if(h2s[i].innerText == "AtCoder Grand Contest"){
             _append_checkboxes(h2s[i], consts.AGC_COL_NUM);
+        }
+        else if(h2s[i].innerHTML == "ABC-Like Contest"){
+            _append_checkboxes(h2s[i], consts.ABCLIKE_COL_NUM);
+        }
+        else if(h2s[i].innerHTML == "ARC-Like Contest"){
+            _append_checkboxes(h2s[i], consts.ARCLIKE_COL_NUM);
         }
     }
     _append_checkboxes_other_contests();
