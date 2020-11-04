@@ -9,7 +9,7 @@ const consts = require("./consts.js");
 
 
 // [START function]
-export function click_again_btn_sla(e){
+export function click_again_btn_sla(e) {
     /* Againボタンをクリックしたときの処理
 
     * SLAのテーブルのこの問題を初期状態に戻す
@@ -21,7 +21,7 @@ export function click_again_btn_sla(e){
     const problem_name = e.target.getAttribute("id").slice(consts.ID_AGAIN_BTN_SLA_.length);
 
     initialize_problem_status(problem_name);
-    for(let i=1; i<consts.SOLVED_MAX+1; i++){
+    for (let i=1; i<consts.SOLVED_MAX+1; i++) {
         unhilight_problem(problem_name, i);
     }
     save_solve_later_again(problem_name);
@@ -29,7 +29,7 @@ export function click_again_btn_sla(e){
 // [END function]
 
 // [START function]
-export function click_del_btn_sla(e){
+export function click_del_btn_sla(e) {
     /* Deleteボタンをクリックしたときの処理
 
     * SLAのテーブルからこの問題を削除する
@@ -55,7 +55,7 @@ export function click_del_btn_sla(e){
 // [END function]
 
 // [START function]
-export function click_chkbox_sla(e){
+export function click_chkbox_sla(e) {
     /* 問題のチェックボックスがクリックされたときの処理
     Args:
         e(event): クリックされたチェックボックスのイベント
@@ -63,7 +63,7 @@ export function click_chkbox_sla(e){
 
     const problem_name = e.target.getAttribute("id").slice(consts.ID_CHKBOX_SLA_.length);
 
-    if(e.target.checked){
+    if(e.target.checked) {
         // SLAテーブルにこの問題を追加する
         const a_tag = e.target.parentNode.getElementsByTagName("a")[0].cloneNode(true);
         make_new_tr_sla(problem_name, a_tag);
@@ -80,7 +80,7 @@ export function click_chkbox_sla(e){
 // [END function]
 
 // [START function]
-function save_solve_later_again(problem_name){
+function save_solve_later_again(problem_name) {
     /*
     SLAテーブルの状態を保存する
 
@@ -100,7 +100,7 @@ function save_solve_later_again(problem_name){
     */
     const sla_id = "sla_" + problem_name;
 
-    if(document.getElementById(consts.ID_TR_SLA_+problem_name) === null){
+    if(document.getElementById(consts.ID_TR_SLA_+problem_name) === null) {
         // SLAテーブルに要素が存在しないなら、データを削除する
         chrome.storage.sync.remove(sla_id);
         return true;
@@ -109,7 +109,16 @@ function save_solve_later_again(problem_name){
     // SLAテーブルに要素が存在するなら、現在の状態を保存する
     let saving_data = {};
     saving_data[sla_id] = {};
-    for(let i=1; i<=consts.SOLVED_MAX; i++){
+
+    // problem_nameやurlやdifficultyなどの属性を保存する
+    const target_tr = document.getElementById("tr_"+sla_id);
+    const a_tag = target_tr.getElementsByTagName("a")[0];
+    saving_data[sla_id][consts.STORAGE_KEY_PROBLEM_NAME] = a_tag.innerText;
+    saving_data[sla_id][consts.STORAGE_KEY_URL] = a_tag.href;
+    saving_data[sla_id][consts.STORAGE_KEY_DIFFICULTY] = a_tag.className;
+
+    // solvedチェックボックスの状態を保存する
+    for(let i=1; i<=consts.SOLVED_MAX; i++) {
         const chkbox = document.getElementById("chkbox_solved"+String(i)+"_"+sla_id);
         if(chkbox === null){
             const div = document.getElementById("date_solved"+String(i)+"_"+sla_id);
@@ -124,7 +133,7 @@ function save_solve_later_again(problem_name){
 // [END function]
 
 // [START function]
-export function click_chkbox_solved_sla(e){
+export function click_chkbox_solved_sla(e) {
     /* Solved Later Againテーブルの Solved のチェックボックスをクリックしたときの処理
 
     * Solved1のチェックが入ったら、クリックされた年月日をいれて、Solved2をクリック可能にする
@@ -152,7 +161,7 @@ export function click_chkbox_solved_sla(e){
         div.innerText = year + "/" + (month+1) + "/" + day + "(" + consts.WDAYS[wday] + ")";
         td.appendChild(div);
 
-        if(solved_num < consts.SOLVED_MAX){
+        if(solved_num < consts.SOLVED_MAX) {
             const chkbox_solved_next = document.getElementById("chkbox_solved"+(solved_num+1)+"_sla_"+problem_name);
             chkbox_solved_next.disabled = false;
         }
