@@ -253,11 +253,14 @@
     function async_can_make_checkboxes(try_count) {
         /* ページのDOMが構築されるまで処理を待つ */
         return new Promise(function (resolve, reject) {
-            console.log("hogehoge");
+            if (try_count === 0) {
+                // しょうがないので処理を進める
+                resolve();
+                return;
+            }
+
             const is_success = _can_make_checkboxes();
-            is_success = false;  // TODO
-            console.log(try_count);
-            if(is_success || try_count === 0){
+            if(is_success){
                 resolve();
                 return;
             }
