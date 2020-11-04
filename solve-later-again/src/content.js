@@ -67,23 +67,33 @@
                 }
                 break;
             case "PAST":
-                if (last_div.getElementsByTagName("a")[0].innerText === "第一回 アルゴリズム実技検定 過去問")
+                if (last_div.getElementsByTagName("a")[0].innerText === "第一回 アルゴリズム実技検定 過去問" &&
+                    tds[tds.length-1].getElementsByTagName("a")[0].innerText === "O. 持久戦 / Endurance"
+                )
                     return true;
                 break;
             case "JOI":
-                if (last_div.getElementsByTagName("a")[0].innerText === "第５回日本情報オリンピック 予選（オンライン）")
+                if (last_div.getElementsByTagName("a")[0].innerText === "第５回日本情報オリンピック 予選（オンライン）" &&
+                    tds[tds.length-1].getElementsByTagName("a")[0].innerText === "E. JOI 2006 予選 問題5"
+                )
                     return true;
                 break;
             case "JAG":
-                if (last_div.getElementsByTagName("a")[0].innerText === "JAG Practice Contest for ACM-ICPC Asia Regional 2012")
+                if (last_div.getElementsByTagName("a")[0].innerText === "JAG Practice Contest for ACM-ICPC Asia Regional 2012" &&
+                    tds[tds.length-1].getElementsByTagName("a")[0].innerText === "J. Ancient Scrolls"
+                )
                     return true;
                 break;
             case "Marathon":
-                if (last_div.getElementsByTagName("a")[0].innerText === "Chokudai Contest 001")
+                if (last_div.getElementsByTagName("a")[0].innerText === "Chokudai Contest 001" &&
+                    tds[tds.length-1].getElementsByTagName("a")[0].innerText === "A. 高橋君の山崩しゲーム"
+                )
                     return true;
                 break;
             case "Other Contests":
-                if (last_div.getElementsByTagName("a")[0].innerText === "UTPC 2011")
+                if (last_div.getElementsByTagName("a")[0].innerText === "UTPC 2011" &&
+                    tds[tds.length-1].getElementsByTagName("a")[0].innerText === "L. L番目の数字"
+                )
                     return true;
                 break;
             }
