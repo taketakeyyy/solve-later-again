@@ -53,16 +53,14 @@
         const last_div = divs[divs.length-1];
         const tbody = last_div.getElementsByTagName("tbody")[0];
         const tds = tbody.getElementsByTagName("td");
-        // if (tds[tds.length-1].getElementsByTagName("a")[0].innerText === "E. LRU パズル / LRU Puzzle") {
-        //     return true;
-        // }
-        // return false;
 
         switch (elem_h2.innerText) {
             // 最後のdiv要素のコンテストが表示されていたらOKとする
             case "AGC-Like":
             case "AGC-Like Contest":
-                if (last_div.getElementsByTagName("a")[0].innerText === "CODE FESTIVAL 2016 qual A") {
+                if (last_div.getElementsByTagName("a")[0].innerText === "CODE FESTIVAL 2016 qual A" &&
+                    tds[tds.length-1].getElementsByTagName("a")[0].innerText === "E. LRU パズル / LRU Puzzle"
+                ) {
                     console.log(divs.length);
                     console.log("fafafa");
                     return true;
