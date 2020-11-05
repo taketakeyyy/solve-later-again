@@ -13,7 +13,7 @@ chrome.runtime.onMessage.addListener(
 
 
 // タブに変更があったとき（初めてページを開いたときも発火する）
-chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) { 
+chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
     // [TODO] Unchecked runtime.lastError: The message port closed before a response was received.はこのへんがあやしい
 
     if(changeInfo.status !== "complete"){ return false; }
@@ -29,7 +29,7 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
             // Tableページでないならば
             return false;
         }
-        
+
         // Tableページならば
         // アクティブタブにメッセージを送信する
         const queryInfo = {

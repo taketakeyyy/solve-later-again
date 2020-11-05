@@ -47,7 +47,9 @@ export function click_del_btn_sla(e) {
 
     // この問題のチェックボックスのチェックを外す
     const chkbox = document.getElementById(consts.ID_CHKBOX_SLA_+problem_name);
-    chkbox.checked = false;
+    if (chkbox !== null) {
+        chkbox.checked = false;
+    }
 
     // 現在のテーブル状態を保存する
     save_solve_later_again(problem_name);
