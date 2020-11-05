@@ -379,7 +379,7 @@ export function hilight_problems(){
     const root_div = document.getElementById(consts.ID_SLA_ROOT);
     const tbody = root_div.getElementsByTagName("tbody")[0];
     const trs = tbody.getElementsByTagName("tr");
-    for(let i=0; i<trs.length; i++){
+    for(let i=0; i<trs.length; i++) {
         const problem_name = trs[i].getAttribute("id").slice(consts.ID_TR_SLA_.length);
         const tds = trs[i].getElementsByTagName("td");
         // Solved 1をチェックする
@@ -396,13 +396,13 @@ export function hilight_problems(){
                 // このSovedをまだチェックしていないので、前のSolvedの日付と比較する
                 const dt_str = document.getElementById("date_solved"+String(solved_num-1)+"_sla_"+problem_name).innerText;
                 const dt = strdate2date(dt_str);
-                //const dt = strdate2date("2019/6/1(Hoge)");  // テスト用
+                // const dt = strdate2date("2019/6/1(Hoge)");  // テスト用
                 if(today-dt >= need_msec){
                     // 経過しているのでハイライト
                     const target_tr = document.getElementById(consts.ID_TR_SLA_+problem_name);
                     target_tr.style.backgroundColor = consts.HILIGHT_CLR_TR;
                     tds[solved_num].style.backgroundColor = consts.HILIGHT_CLR_TD;
-                        return true;
+                    return true;
                 }
                 return false;
             }

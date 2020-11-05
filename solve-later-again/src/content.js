@@ -228,20 +228,20 @@
         // 各ABC, ARC, AGC等の問題にチェックボックスをつける
         return Promise.resolve()
             .then(() => {
-                dom_ope.make_checkboxes();
+                return async_make_sla_table();
             })
             .then(() => {
-                async_check_checkboxes();
+                return dom_ope.make_checkboxes();
             })
             .then(() => {
-                async_make_sla_table();
+                return async_check_checkboxes();
             })
-            .then(
-                dom_ope.hilight_problems
-            )
-            .then(
-                make_table_tab_tag
-            )
+            .then(() => {
+                return dom_ope.hilight_problems();
+            })
+            .then(() => {
+                return make_table_tab_tag();
+            })
             .then(() => {
                 g_semaph_can_make_chkbox = true;
             });
@@ -307,10 +307,10 @@
         // 各ABC, ARC, AGC等の問題にチェックボックスをつける
         return Promise.resolve()
             .then(() => {
-                dom_ope.make_checkboxes();
+                return dom_ope.make_checkboxes();
             })
             .then(() => {
-                async_check_checkboxes();
+                return async_check_checkboxes();
             })
             .then(() => {
                 g_semaph_can_make_chkbox = true;
