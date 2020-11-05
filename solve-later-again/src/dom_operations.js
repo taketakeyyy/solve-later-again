@@ -118,14 +118,34 @@ export function make_checkboxes(){
         else if(h2s[i].innerText == "AtCoder Grand Contest"){
             _append_checkboxes(h2s[i], consts.AGC_COL_NUM);
         }
-        else if(h2s[i].innerHTML == "ABC-Like Contest"){
+        else if(h2s[i].innerText == "ABC-Like Contest"){
             _append_checkboxes(h2s[i], consts.ABCLIKE_COL_NUM);
         }
-        else if(h2s[i].innerHTML == "ARC-Like Contest"){
+        else if(h2s[i].innerText == "ARC-Like Contest"){
             _append_checkboxes(h2s[i], consts.ARCLIKE_COL_NUM);
         }
+        else if(h2s[i].innerText == "AGC-Like Contest") {
+            _append_checkboxes_other_contests();
+        }
+        else if(h2s[i].innerText == "AGC-Like") {
+            _append_checkboxes_other_contests();
+        }
+        else if(h2s[i].innerText == "PAST") {
+            _append_checkboxes_other_contests();
+        }
+        else if(h2s[i].innerText == "JOI") {
+            _append_checkboxes_other_contests();
+        }
+        else if(h2s[i].innerText == "JAG") {
+            _append_checkboxes_other_contests();
+        }
+        else if(h2s[i].innerText == "Marathon") {
+            _append_checkboxes_other_contests();
+        }
+        else if(h2s[i].innerText == "Other Contests") {
+            _append_checkboxes_other_contests();
+        }
     }
-    _append_checkboxes_other_contests();
 }
 //[END function]
 
@@ -435,4 +455,12 @@ function _make_show_sla_table_chkbox(){
 
     return base_div;
 }
+//[END function]
 
+//[START function]
+export function get_active_table_tab() {
+    /* 現在のtable_tabでアクティブになっているものを返す */
+    const table_tab = document.getElementsByClassName("table-tab btn-group")[0];
+    return table_tab.getElementsByClassName("active")[0];
+}
+//[END function]

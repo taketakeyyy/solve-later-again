@@ -31,5 +31,10 @@ export const WDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 export const HILIGHT_CLR_TR = "#f5b88791";
 export const HILIGHT_CLR_TD = "#f7964891";
 
-export const CAN_MAKE_CHKBOX_WAIT_MSEC = 1000;  // ページのDOMが構成されるのを待つミリ秒
-export const CAN_MAKE_CHKBOX_RETRY_COUNT = 60;  // ページのDOMが構成されるのを待つリトライ回数
+export const CAN_MAKE_CHKBOX_WAIT_MSEC = 400;  // ページのDOMが構成されるのを待つミリ秒
+export const CAN_MAKE_CHKBOX_RETRY_COUNT = 20;  // ページのDOMが構成されるのを待つリトライ回数
+
+// storage_data[sla_id][STORAGE_KEY_*]
+export const STORAGE_KEY_PROBLEM_NAME = "problem_name";
+export const STORAGE_KEY_URL = "url";
+export const STORAGE_KEY_DIFFICULTY = "difficulty";
