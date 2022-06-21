@@ -5,17 +5,27 @@
   "main": "content.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack-cli --mode=production",
-    "build-test": "webpack-cli -w --mode=development"
+    "tsc": "tsc",
+    "build": "webpack --config webpack.prod.js",
+    "build-dev": "webpack-cli -w --config webpack.dev.js"
   },
   "keywords": [],
   "author": "taketakeyyy",
   "license": "MIT",
   "devDependencies": {
-    "@babel/core": "^7.12.3",
-    "@babel/preset-env": "^7.12.1",
-    "babel-loader": "^8.1.0",
-    "webpack": "^4.44.2",
-    "webpack-cli": "^3.3.12"
+    "@babel/core": "^7.18.5",
+    "@babel/preset-env": "^7.18.2",
+    "@types/chrome": "^0.0.190",
+    "babel-loader": "^8.2.5",
+    "css-loader": "^6.7.1",
+    "sass": "^1.52.3",
+    "sass-loader": "^13.0.0",
+    "style-loader": "^3.3.1",
+    "ts-loader": "^9.3.0",
+    "typescript": "^4.7.3",
+    "webpack": "^5.73.0",
+    "webpack-cli": "^4.10.0",
+    "webpack-dev-server": "^4.9.2",
+    "webpack-merge": "^5.8.0"
   }
 }
