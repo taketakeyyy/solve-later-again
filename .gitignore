@@ -2,7 +2,8 @@
 solve-later-again/node_modules
 solve-later-again/node_modules/**
 
-solve-later-again/dst/content.js
+solve-later-again/dst/bin/
+solve-later-again/dst/bin/**
 
 *.js.map
 
